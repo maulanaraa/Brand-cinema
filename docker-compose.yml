@@ -1,0 +1,41 @@
+version: "3.8"
+
+services:
+  frontend:
+    build:
+      context: ./brand-cinemas-fe
+      args:
+        VITE_API_URL: ""
+        VITE_GOOGLE_CLIENT_ID: ${VITE_GOOGLE_CLIENT_ID:-}
+        VITE_MIDTRANS_CLIENT_KEY: ${VITE_MIDTRANS_CLIENT_KEY:-}
+        VITE_MIDTRANS_IS_PRODUCTION: ${VITE_MIDTRANS_IS_PRODUCTION:-false}
+
+    container_name: brand-cinemas-fe
+
+    ports:
+      - "3000:3000"
+
+    depends_on:
+      - api
+
+    restart: unless-stopped
+
+  api:
+    build:
+      context: ./cinema-be
+
+    container_name: cinema-be
+
+    env_file:
+      - ./cinema-be/.env
+
+    ports:
+      - "5000:5000"
+
+    volumes:
+      - uploads:/app/uploads
+
+    restart: unless-stopped
+
+volumes:
+  uploads:
