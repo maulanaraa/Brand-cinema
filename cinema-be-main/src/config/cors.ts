@@ -8,6 +8,7 @@ const isDevelopmentEnv = (nodeEnv: string): boolean =>
 
 const LOCALHOST_ORIGIN_PATTERN = /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(:\d+)?$/i;
 const BRAND_CINEMAS_ORIGIN_PATTERN = /^https:\/\/([a-z0-9-]+\.)?brand-cinemas\.online$/i;
+const VERCEL_ORIGIN_PATTERN = /^https:\/\/([a-z0-9-]+\.)?vercel\.app$/i;
 
 const allowedOrigins = new Set(env.clientUrls.map(normalizeOrigin));
 
@@ -36,8 +37,8 @@ export const isAllowedOrigin = (origin: string | undefined): boolean => {
     return false;
   }
 
-  // Production FE hosts (www / apex / preview subdomains under brand-cinemas.online)
-  if (BRAND_CINEMAS_ORIGIN_PATTERN.test(normalized)) {
+  // Production FE hosts (www / apex / preview subdomains under brand-cinemas.online or vercel.app)
+  if (BRAND_CINEMAS_ORIGIN_PATTERN.test(normalized) || VERCEL_ORIGIN_PATTERN.test(normalized)) {
     return true;
   }
 
