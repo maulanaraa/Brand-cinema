@@ -464,7 +464,9 @@ export class TmdbService {
         syncedMovies.push(movie);
         nowPlayingCount++;
       } catch (err) {
-        logger.warn(`Failed to sync now playing movie tmdbId ${item.tmdbId}:`, err);
+        logger.warn(`Failed to sync now playing movie tmdbId ${item.tmdbId}`, {
+          error: err instanceof Error ? err.message : String(err),
+        });
       }
     }
 
@@ -512,7 +514,9 @@ export class TmdbService {
         syncedMovies.push(movie);
         upcomingCount++;
       } catch (err) {
-        logger.warn(`Failed to sync upcoming movie tmdbId ${item.tmdbId}:`, err);
+        logger.warn(`Failed to sync upcoming movie tmdbId ${item.tmdbId}`, {
+          error: err instanceof Error ? err.message : String(err),
+        });
       }
     }
 

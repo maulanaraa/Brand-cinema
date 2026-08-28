@@ -13,7 +13,9 @@ const run = async () => {
     logger.info(`- Now Playing: ${result.nowPlayingCount} film`);
     logger.info(`- Coming Soon: ${result.upcomingCount} film`);
   } catch (error) {
-    logger.error('❌ Error during Indonesia cinema movie sync:', error);
+    logger.error('❌ Error during Indonesia cinema movie sync', {
+      error: error instanceof Error ? error.message : String(error),
+    });
   } finally {
     await disconnectDatabase();
     process.exit(0);
