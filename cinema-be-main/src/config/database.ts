@@ -61,9 +61,9 @@ export const connectDatabase = async (): Promise<void> => {
 
       if (attempt === MAX_RETRIES) {
         logger.error(
-          'Unable to connect to MongoDB. If using Atlas, whitelist your IP at Network Access and verify MONGO_URI credentials, or ensure local MongoDB service is running.'
+          'Unable to connect to MongoDB. If using Atlas, whitelist your IP at Network Access (0.0.0.0/0) and verify MONGO_URI credentials.'
         );
-        if (env.nodeEnv === 'production') {
+        if (env.nodeEnv === 'production' && !process.env.VERCEL) {
           process.exit(1);
         }
         return;
