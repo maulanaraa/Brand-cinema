@@ -6,10 +6,16 @@ import { UPLOAD } from '../constants';
 import { AppError } from '../helpers/response.helper';
 import { HTTP_STATUS } from '../constants';
 
-const uploadDir = path.join(process.cwd(), UPLOAD.POSTER_DIR);
+const uploadDir = process.env.VERCEL
+  ? path.join('/tmp', UPLOAD.POSTER_DIR)
+  : path.join(process.cwd(), UPLOAD.POSTER_DIR);
 
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
+try {
+  if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+  }
+} catch (e) {
+  // Ignore in read-only serverless environment
 }
 
 const storage = multer.diskStorage({

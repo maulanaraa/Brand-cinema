@@ -17,12 +17,16 @@ const readCertFile = (): GoogleCertMap => {
 };
 
 const writeCertFile = (certs: GoogleCertMap): void => {
-  const dir = path.dirname(CERTS_PATH);
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
+  try {
+    const dir = path.dirname(CERTS_PATH);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
 
-  fs.writeFileSync(CERTS_PATH, `${JSON.stringify(certs, null, 2)}\n`, 'utf-8');
+    fs.writeFileSync(CERTS_PATH, `${JSON.stringify(certs, null, 2)}\n`, 'utf-8');
+  } catch (error) {
+    // Ignore write failure in read-only environment
+  }
 };
 
 const downloadGoogleCerts = (): Promise<GoogleCertMap> =>
