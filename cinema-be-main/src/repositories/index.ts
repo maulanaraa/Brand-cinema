@@ -1,0 +1,10 @@
+export { userRepository, UserRepository } from './user.repository';
+export { movieRepository, MovieRepository } from './movie.repository';
+export { showtimeRepository, ShowtimeRepository } from './showtime.repository';
+export { bookingRepository, BookingRepository } from './booking.repository';
+export { paymentRepository, PaymentRepository } from './payment.repository';
+export { concessionRepository, ConcessionRepository } from './concession.repository';
+export { hallRepository, HallRepository } from './hall.repository';
+export { cityRepository, CityRepository } from './city.repository';
+export { cinemaRepository, CinemaRepository } from './cinema.repository';
+export { carouselRepository, CarouselRepository } from './carousel.repository';

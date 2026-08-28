@@ -1,0 +1,41 @@
+import type { ICarouselItem } from '@/types';
+
+export const mockCarouselItems: ICarouselItem[] = [
+  {
+    _id: 'carousel-1',
+    type: 'movie',
+    title: 'Spider-Man: No Way Home',
+    description: 'Peter Parker meminta bantuan Doctor Strange untuk mengembalikan identitas rahasia mereka.',
+    image_url: 'https://images.pexels.com/photos/7234228/pexels-photo-7234228.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop',
+    link_url: '/movies/movie-1',
+    movie: undefined,
+    is_active: true,
+    order: 1,
+    createdAt: '2026-07-01T00:00:00.000Z',
+    updatedAt: '2026-07-01T00:00:00.000Z',
+  },
+  {
+    _id: 'carousel-2',
+    type: 'promotion',
+    title: 'Diskon 50% Weekend Spesial',
+    description: 'Nikmati diskon 50% untuk semua tiket film setiap weekend bulan ini!',
+    image_url: 'https://images.pexels.com/photos/7991579/pexels-photo-7991579.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop',
+    link_url: '/promotions',
+    is_active: true,
+    order: 2,
+    createdAt: '2026-07-01T00:00:00.000Z',
+    updatedAt: '2026-07-01T00:00:00.000Z',
+  },
+  {
+    _id: 'carousel-3',
+    type: 'movie',
+    title: 'Avengers: Endgame',
+    description: 'Para Avengers berkumpul untuk mengalahkan Thanos dan mengembalikan semesta.',
+    image_url: 'https://images.pexels.com/photos/7991318/pexels-photo-7991318.jpeg?auto=compress&cs=tinysrgb&w=1920&h=1080&fit=crop',
+    link_url: '/movies/movie-2',
+    is_active: true,
+    order: 3,
+    createdAt: '2026-07-01T00:00:00.000Z',
+    updatedAt: '2026-07-01T00:00:00.000Z',
+  },
+];

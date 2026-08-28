@@ -1,0 +1,11 @@
+export * as authController from './auth.controller';
+export * as movieController from './movie.controller';
+export * as showtimeController from './showtime.controller';
+export * as bookingController from './booking.controller';
+export * as dashboardController from './dashboard.controller';
+export * as concessionController from './concession.controller';
+export * as hallController from './hall.controller';
+export * as cityController from './city.controller';
+export * as cinemaController from './cinema.controller';
+export * as carouselController from './carousel.controller';
+export * as chatController from './chat.controller';
