@@ -22,7 +22,7 @@ const startServer = async (): Promise<void> => {
     );
   }
 
-  app.listen(env.port, () => {
+  const server = app.listen(env.port, () => {
     logger.info(`Server running on port ${env.port}`);
     logger.info(`Environment: ${env.nodeEnv}`);
     logger.info(`Swagger docs: http://localhost:${env.port}/api-docs`);
@@ -53,6 +53,16 @@ const startServer = async (): Promise<void> => {
 
     logger.info(`App URL (QR/email links): ${env.appUrl}`);
   });
+
+  const shutdown = () => {
+    server.close(() => {
+      process.exit(0);
+    });
+  };
+
+  process.once('SIGINT', shutdown);
+  process.once('SIGTERM', shutdown);
+  process.once('SIGUSR2', shutdown);
 };
 
 startServer().catch((error) => {

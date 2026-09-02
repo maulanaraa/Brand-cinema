@@ -181,7 +181,7 @@ export default function HomePage(): ReactElement {
                       {activeMoviePath && (
                         <Link
                           to={activeMoviePath}
-                          className="btn btn-secondary border-white/30 bg-white/50 px-5 py-2.5 text-sm hover:bg-white/60 sm:px-8 sm:py-3 sm:text-lg"
+                          className="btn border-0 bg-white/20 text-white backdrop-blur-2xl hover:bg-white/30 active:scale-95 px-5 py-2.5 text-sm sm:px-8 sm:py-3 sm:text-lg shadow-xl shadow-black/30 font-semibold"
                         >
                           <Play className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                           {t('viewDetails')}
@@ -205,14 +205,14 @@ export default function HomePage(): ReactElement {
               <>
                 <button
                   onClick={goPrev}
-                  className="absolute left-2 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/35 text-white backdrop-blur-md transition-all hover:bg-white/20 active:scale-95 sm:left-4 sm:h-12 sm:w-12 sm:bg-white/10"
+                  className="absolute left-2 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border-0 bg-white/15 text-white backdrop-blur-2xl transition-all hover:bg-white/30 active:scale-95 sm:left-4 sm:h-12 sm:w-12"
                   aria-label="Previous slide"
                 >
                   <ChevronLeft className="h-5 w-5 sm:h-6 sm:w-6" />
                 </button>
                 <button
                   onClick={goNext}
-                  className="absolute right-2 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-black/35 text-white backdrop-blur-md transition-all hover:bg-white/20 active:scale-95 sm:right-4 sm:h-12 sm:w-12 sm:bg-white/10"
+                  className="absolute right-2 top-1/2 z-20 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full border-0 bg-white/15 text-white backdrop-blur-2xl transition-all hover:bg-white/30 active:scale-95 sm:right-4 sm:h-12 sm:w-12"
                   aria-label="Next slide"
                 >
                   <ChevronRight className="h-5 w-5 sm:h-6 sm:w-6" />
@@ -255,7 +255,7 @@ export default function HomePage(): ReactElement {
             </p>
           </div>
 
-          <div className="mb-6 flex justify-center gap-4 border-b border-gray-200 dark:border-white/10 sm:mb-8 sm:gap-6">
+          <div className="mb-3 flex justify-center gap-4 border-b border-gray-200 dark:border-white/10 sm:mb-4 sm:gap-6">
             <button
               onClick={() => setActiveTab('now_playing')}
               className={`pb-2 text-sm font-semibold transition-all border-b-2 ${
@@ -290,21 +290,21 @@ export default function HomePage(): ReactElement {
                 <div className="relative">
                   <button
                     onClick={() => nowPlayingSliderRef.current?.goPrev()}
-                    className="absolute -left-5 top-1/2 -translate-y-1/2 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/30 text-white backdrop-blur-md transition-all hover:bg-white/50"
+                    className="absolute -left-5 top-1/2 -translate-y-1/2 z-10 flex h-10 w-10 items-center justify-center rounded-full border-0 bg-white/15 text-white backdrop-blur-2xl transition-all hover:bg-white/30 active:scale-95"
                     aria-label="Previous slide"
                   >
                     <ChevronLeft className="h-5 w-5" />
                   </button>
                   <button
                     onClick={() => nowPlayingSliderRef.current?.goNext()}
-                    className="absolute -right-5 top-1/2 -translate-y-1/2 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/30 text-white backdrop-blur-md transition-all hover:bg-white/50"
+                    className="absolute -right-5 top-1/2 -translate-y-1/2 z-10 flex h-10 w-10 items-center justify-center rounded-full border-0 bg-white/15 text-white backdrop-blur-2xl transition-all hover:bg-white/30 active:scale-95"
                     aria-label="Next slide"
                   >
                     <ChevronRight className="h-5 w-5" />
                   </button>
                   <MovieSlider key="now_playing" ref={nowPlayingSliderRef} movies={nowShowing} />
                 </div>
-                <div className="mt-6 flex justify-center sm:mt-8">
+                <div className="mt-3 flex justify-center sm:mt-4">
                   <Link to="/movies" className="btn btn-secondary w-full max-w-xs sm:w-auto">
                     {t('viewAllMovies')}
                   </Link>
@@ -321,21 +321,21 @@ export default function HomePage(): ReactElement {
                 <div className="relative">
                   <button
                     onClick={() => comingSoonSliderRef.current?.goPrev()}
-                    className="absolute -left-5 top-1/2 -translate-y-1/2 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/30 text-white backdrop-blur-md transition-all hover:bg-white/50"
+                    className="absolute -left-5 top-1/2 -translate-y-1/2 z-10 flex h-10 w-10 items-center justify-center rounded-full border-0 bg-white/15 text-white backdrop-blur-2xl transition-all hover:bg-white/30 active:scale-95"
                     aria-label="Previous slide"
                   >
                     <ChevronLeft className="h-5 w-5" />
                   </button>
                   <button
                     onClick={() => comingSoonSliderRef.current?.goNext()}
-                    className="absolute -right-5 top-1/2 -translate-y-1/2 z-10 flex h-10 w-10 items-center justify-center rounded-full bg-white/30 text-white backdrop-blur-md transition-all hover:bg-white/50"
+                    className="absolute -right-5 top-1/2 -translate-y-1/2 z-10 flex h-10 w-10 items-center justify-center rounded-full border-0 bg-white/15 text-white backdrop-blur-2xl transition-all hover:bg-white/30 active:scale-95"
                     aria-label="Next slide"
                   >
                     <ChevronRight className="h-5 w-5" />
                   </button>
                   <MovieSlider key="coming_soon" ref={comingSoonSliderRef} movies={comingSoon} />
                 </div>
-                <div className="mt-6 flex justify-center sm:mt-8">
+                <div className="mt-3 flex justify-center sm:mt-4">
                   <Link to="/movies" className="btn btn-secondary w-full max-w-xs sm:w-auto">
                     {t('viewAllMovies')}
                   </Link>

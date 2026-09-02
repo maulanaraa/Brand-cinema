@@ -43,6 +43,18 @@ function computeEndTime(startTime: string, durationMinutes: number): string {
   return `${String(endHours).padStart(2, '0')}:${String(endMinutes).padStart(2, '0')}`;
 }
 
+export function extractLocalDateStr(dateInput: string | Date): string {
+  if (!dateInput) return '';
+  const d = new Date(dateInput);
+  if (Number.isNaN(d.getTime())) {
+    return typeof dateInput === 'string' ? dateInput.slice(0, 10) : '';
+  }
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+
 export function toShowtime(api: ApiShowtime): IShowtime {
   const movie = toMovieFromPopulated(api.movieId, api.price);
   const rows = Math.max(1, Math.ceil(api.totalSeat / 10));
@@ -59,7 +71,7 @@ export function toShowtime(api: ApiShowtime): IShowtime {
       createdAt: api.createdAt,
       updatedAt: api.updatedAt,
     },
-    show_date: api.date,
+    show_date: extractLocalDateStr(api.date),
     start_time: api.time,
     end_time: computeEndTime(api.time, movie.duration),
     ticket_price: api.price,
@@ -74,9 +86,7 @@ export function getShowtimeTicketPrice(showtime: Pick<IShowtime, 'ticket_price' 
 
 /** Local start datetime from show_date (YYYY-MM-DD or ISO) + start_time (HH:mm). */
 export function getShowtimeStartAt(showtime: Pick<IShowtime, 'show_date' | 'start_time'>): Date {
-  const datePart = showtime.show_date.includes('T')
-    ? showtime.show_date.split('T')[0]
-    : showtime.show_date.slice(0, 10);
+  const datePart = extractLocalDateStr(showtime.show_date);
   const rawTime = showtime.start_time?.trim() || '00:00';
   const timePart = rawTime.length === 5 ? `${rawTime}:00` : rawTime;
   return new Date(`${datePart}T${timePart}`);

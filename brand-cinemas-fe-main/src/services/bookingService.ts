@@ -58,6 +58,14 @@ export const bookingService = {
     return res.data;
   },
 
+  async processPayment(bookingId: string, status: 'SUCCESS' | 'FAILED' = 'SUCCESS') {
+    const res = await apiRequest<ApiBooking>(`/api/bookings/${bookingId}/payment`, {
+      method: 'PATCH',
+      body: JSON.stringify({ status }),
+    });
+    return toBooking(res.data);
+  },
+
   async getMyBookings(_userId?: string, page = 1, limit = 20): Promise<IBooking[]> {
     const res = await apiRequest<BookingListResponse>(
       `/api/bookings/me?page=${page}&limit=${limit}&sort=createdAt&order=desc`,

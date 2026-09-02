@@ -152,11 +152,11 @@ export default function LocationSearchBar() {
   };
 
   const fieldButtonClass =
-    'flex w-full items-center gap-3 rounded-md border border-[var(--border-soft)] bg-[var(--surface-raised)] px-4 py-3 text-left transition-colors hover:border-primary-600 disabled:cursor-not-allowed disabled:opacity-60 dark:border-white/10 dark:bg-transparent dark:hover:border-primary-500/60';
+    'flex w-full items-center gap-3 rounded-xl border-0 bg-black/5 px-4 py-3.5 text-left transition-all hover:bg-black/10 disabled:cursor-not-allowed disabled:opacity-60 dark:bg-white/5 dark:hover:bg-white/10';
 
   const menuClass = (open: boolean) =>
     clsx(
-      'absolute left-0 right-0 top-full z-40 mt-2 max-h-64 overflow-y-auto rounded-xl border border-[var(--border-soft)] bg-[var(--surface-card)] shadow-xl transition-all duration-200 origin-top dark:border-white/10 dark:bg-dark-850',
+      'absolute left-0 right-0 top-full z-40 mt-2 max-h-64 overflow-y-auto rounded-xl border-0 bg-[var(--surface-card)]/95 shadow-2xl backdrop-blur-2xl transition-all duration-200 origin-top dark:bg-dark-850/95 p-1',
       open
         ? 'pointer-events-auto scale-100 opacity-100'
         : 'pointer-events-none scale-95 opacity-0',
@@ -164,15 +164,15 @@ export default function LocationSearchBar() {
 
   const optionClass = (active: boolean) =>
     clsx(
-      'flex w-full items-center px-3 py-2.5 text-left text-sm font-semibold transition-colors',
+      'flex w-full items-center px-3 py-2.5 text-left text-sm font-semibold rounded-lg transition-colors',
       active
-        ? 'bg-primary-550 text-dark-950'
-        : 'text-gray-700 hover:bg-gray-50 dark:text-slate-300 dark:hover:bg-white/5',
+        ? 'bg-primary-550 text-dark-950 font-bold'
+        : 'text-gray-700 hover:bg-black/5 dark:text-slate-300 dark:hover:bg-white/5',
     );
 
   return (
     <section className="px-4 py-5 sm:px-6 sm:py-8 lg:px-8">
-      <div className="cinema-panel mx-auto max-w-7xl p-4 sm:p-5">
+      <div className="mx-auto max-w-7xl rounded-2xl border-0 bg-[var(--surface-card)] p-4 shadow-2xl backdrop-blur-xl dark:border-0 dark:bg-dark-900/90 sm:p-5">
         <div className="grid grid-cols-1 gap-3 md:grid-cols-[1fr_1fr_1fr_auto]">
           <div className={clsx('relative', openMenu === 'city' && 'z-40')} data-location-menu>
             <span className="mb-2 block text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-slate-400">
@@ -298,7 +298,7 @@ export default function LocationSearchBar() {
             type="button"
             onClick={handleSearch}
             disabled={!canSearch}
-            className="btn btn-accent w-full px-6 py-3 md:w-auto md:self-end disabled:opacity-50"
+            className="btn btn-primary w-full px-6 py-3 md:w-auto md:self-end disabled:opacity-50"
             aria-label={t('searchMovies')}
           >
             <Search className="h-5 w-5" />

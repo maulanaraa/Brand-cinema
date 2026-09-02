@@ -52,7 +52,7 @@ const navGroups: NavGroup[] = [
     groupTitle: 'Operations & Ticketing',
     items: [
       { labelKey: 'adminNavShowtimes', href: '/admin/showtimes', icon: Calendar },
-      { labelKey: 'adminNavBookings', href: '/admin/bookings', icon: ClipboardList, badge: 'Live' },
+      { labelKey: 'adminNavBookings', href: '/admin/bookings', icon: ClipboardList },
       { labelKey: 'adminNavHalls', href: '/admin/halls', icon: Building },
     ],
   },

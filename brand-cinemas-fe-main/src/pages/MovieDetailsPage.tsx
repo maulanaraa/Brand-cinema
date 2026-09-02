@@ -216,33 +216,18 @@ export default function MovieDetailsPage() {
                 </div>
               </div>
 
-              <div className="flex flex-col gap-3 sm:flex-row">
-                <Link
-                  to={selectedShowtime ? `/booking/${selectedShowtime._id}` : `/book/${movie._id}`}
-                  className={`btn btn-primary text-lg px-8 py-3 ${
-                    showtimes.length > 0 && !selectedShowtime ? 'pointer-events-none opacity-50' : ''
-                  }`}
-                  aria-disabled={showtimes.length > 0 && !selectedShowtime}
-                  onClick={(event) => {
-                    if (showtimes.length > 0 && (!selectedShowtime || !isShowtimeBookable(selectedShowtime))) {
-                      event.preventDefault();
-                    }
-                  }}
-                >
-                  <Ticket className="h-5 w-5" />
-                  {t('buyTickets')}
-                </Link>
-                {trailerFocusUrl && (
+              {trailerFocusUrl && (
+                <div className="flex flex-col gap-3 sm:flex-row">
                   <button
                     type="button"
                     onClick={() => setTrailerFocus(true)}
-                    className="btn btn-secondary text-lg px-8 py-3"
+                    className="btn border-0 bg-white/10 text-white backdrop-blur-2xl hover:bg-white/20 active:scale-95 text-lg px-8 py-3 shadow-xl shadow-black/30 font-semibold transition-all"
                   >
                     <Play className="h-5 w-5" />
                     {t('watchTrailer')}
                   </button>
-                )}
-              </div>
+                </div>
+              )}
             </div>
           </div>
         </div>

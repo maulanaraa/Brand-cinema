@@ -141,7 +141,7 @@ const MovieSlider = forwardRef<MovieSliderHandle, MovieSliderProps>(({ movies },
         }}
       />
 
-      <div className="relative h-[560px] overflow-hidden sm:h-[600px]">
+      <div className="relative h-[460px] overflow-hidden sm:h-[480px]">
         <div className="absolute inset-0 flex items-center justify-center">
           {slides.map(({ movie, offset }) => {
             const scale = getScale(offset);

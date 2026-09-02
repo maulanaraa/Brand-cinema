@@ -10,7 +10,7 @@ interface SnapPaymentCallbacks {
 
 export async function openSnapPayment(
   instruction: SnapPaymentInstruction,
-  paymentMethod: string,
+  _paymentMethod: string,
   callbacks: SnapPaymentCallbacks,
 ): Promise<void> {
   await loadMidtransSnap();
@@ -20,8 +20,6 @@ export async function openSnapPayment(
   }
 
   window.snap.pay(instruction.snapToken, {
-    enabledPayments: [paymentMethod],
-    selectedPaymentType: paymentMethod,
     language: 'id',
     onSuccess: callbacks.onSuccess,
     onPending: callbacks.onPending,

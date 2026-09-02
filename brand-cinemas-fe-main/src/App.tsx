@@ -44,12 +44,15 @@ import AdminConcessionsPage from './pages/admin/AdminConcessionsPage'
 import AdminCitiesPage from './pages/admin/AdminCitiesPage'
 import AdminCinemasPage from './pages/admin/AdminCinemasPage'
 import AdminUsersPage from './pages/admin/AdminUsersPage'
+import SplashScreen from './components/SplashScreen'
 
 function App() {
   useAuth()
 
   return (
-    <Routes>
+    <>
+      <SplashScreen />
+      <Routes>
       {/* Public and User routes */}
       <Route path="/" element={<Layout />}>
         <Route index element={<HomePage />} />
@@ -181,6 +184,7 @@ function App() {
         <Route path="reports" element={<AdminReportsPage />} />
       </Route>
     </Routes>
+    </>
   )
 }
 

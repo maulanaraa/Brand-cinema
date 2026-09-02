@@ -113,22 +113,22 @@ export class PaymentService {
     let charge: MidtransChargeResponse;
     try {
       charge = (await midtransService.chargeTransaction(payload)) as unknown as MidtransChargeResponse;
-    } catch (error) {
-      if (error instanceof AppError) {
-        if (
-          error.statusCode === HTTP_STATUS.INTERNAL_SERVER_ERROR ||
-          error.statusCode === HTTP_STATUS.CONFLICT
-        ) {
-          throw new AppError(
-            error.statusCode === HTTP_STATUS.CONFLICT
-              ? error.message
-              : MESSAGES.PAYMENT_PROVIDER_ERROR,
-            error.statusCode === HTTP_STATUS.CONFLICT ? HTTP_STATUS.CONFLICT : HTTP_STATUS.BAD_GATEWAY
-          );
+    } catch (coreApiError) {
+      logger.warn('Midtrans Core API charge failed, attempting Snap fallback', {
+        bookingId,
+        paymentMethod,
+        error: coreApiError instanceof Error ? coreApiError.message : coreApiError,
+      });
+
+      try {
+        return await this.chargeWithSnapFallback(booking, user, paymentMethod);
+      } catch (snapError) {
+        logger.error('Midtrans Snap fallback also failed', { snapError });
+        if (coreApiError instanceof AppError) {
+          throw coreApiError;
         }
-        throw error;
+        throw new AppError(MESSAGES.PAYMENT_PROVIDER_ERROR, HTTP_STATUS.BAD_GATEWAY);
       }
-      throw new AppError(MESSAGES.PAYMENT_PROVIDER_ERROR, HTTP_STATUS.BAD_GATEWAY);
     }
 
     let recordInput;
@@ -232,7 +232,8 @@ export class PaymentService {
 
   private async chargeWithSnapFallback(
     booking: Awaited<ReturnType<typeof bookingRepository.findByIdAndUser>>,
-    user: NonNullable<Awaited<ReturnType<typeof userRepository.findById>>>
+    user: NonNullable<Awaited<ReturnType<typeof userRepository.findById>>>,
+    paymentMethod: string = 'credit_card'
   ): Promise<PaymentInstructionResponse> {
     if (!booking) {
       throw new AppError('Booking not found', HTTP_STATUS.NOT_FOUND);
@@ -245,7 +246,7 @@ export class PaymentService {
       recordInput = mapChargeResponseToPaymentRecord(
         booking,
         user,
-        'credit_card',
+        paymentMethod,
         {
           order_id: booking.bookingNumber,
           gross_amount: String(Math.round(booking.totalPrice)),

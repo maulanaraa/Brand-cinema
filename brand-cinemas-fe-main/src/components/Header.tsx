@@ -123,88 +123,153 @@ export default function Header() {
         </div>
       </div>
 
-      {/* Menu Dropdown */}
-      <div className={`absolute right-4 top-full z-[60] mt-1 w-56 border border-[var(--border-soft)] bg-[var(--surface-card)] rounded-xl shadow-xl dark:border-white/10 dark:bg-dark-850 transition-all duration-200 ease-out origin-top-right ${isMobileMenuOpen ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none'}`}>
-          <div className="px-4 py-3 space-y-1">
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = location.pathname === item.href;
-              return (
-                <Link
-                  key={item.href}
-                  to={item.href}
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className={clsx(
-                    "flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition-colors",
-                    isActive
-                      ? 'bg-[#D5A527] text-dark-950 shadow-md shadow-[#D5A527]/20'
-                      : 'text-gray-700 hover:bg-gray-50 dark:text-slate-300 dark:hover:bg-white/5'
-                  )}
-                >
-                  <Icon className={clsx('h-5 w-5', isActive ? 'text-dark-950' : 'text-[#D5A527]')} />
-                  {item.label}
-                </Link>
-              );
-            })}
+      {/* Backdrop overlay for outside click */}
+      {isMobileMenuOpen && (
+        <div
+          className="fixed inset-0 z-[55]"
+          onClick={() => setIsMobileMenuOpen(false)}
+          aria-hidden="true"
+        />
+      )}
 
-            {user ? (
-              <>
-                <Link
-                  to="/profile"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 dark:text-slate-300 dark:hover:bg-white/5"
-                >
-                  <User className="h-5 w-5 text-[#D5A527]" />
-                  {t('profile')}
-                </Link>
-                <Link
-                  to="/my-bookings"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 dark:text-slate-300 dark:hover:bg-white/5"
-                >
-                  <CalendarDays className="h-5 w-5 text-[#D5A527]" />
-                  {t('myTickets')}
-                </Link>
-                {isAdmin && (
-                  <Link
-                    to="/admin"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                    className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 dark:text-slate-300 dark:hover:bg-white/5"
-                  >
-                    <Settings className="h-5 w-5 text-[#D5A527]" />
-                    {t('admin')}
-                  </Link>
+      {/* Konsep 3: Minimalist Floating Glass Menu (Border-less) */}
+      <div
+        className={clsx(
+          'absolute right-4 top-full z-[60] mt-2 w-64 overflow-hidden rounded-2xl bg-[var(--surface-card)]/95 p-2 shadow-2xl backdrop-blur-2xl transition-all duration-200 ease-out origin-top-right dark:bg-dark-900/95',
+          isMobileMenuOpen
+            ? 'opacity-100 scale-100 translate-y-0 pointer-events-auto'
+            : 'opacity-0 scale-95 -translate-y-2 pointer-events-none'
+        )}
+      >
+        {/* Main Navigation */}
+        <div className="space-y-0.5">
+          {navItems.map((item) => {
+            const Icon = item.icon;
+            const isActive = location.pathname === item.href;
+            return (
+              <Link
+                key={item.href}
+                to={item.href}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={clsx(
+                  'group flex items-center justify-between rounded-xl px-3 py-2 text-sm transition-colors',
+                  isActive
+                    ? 'bg-[#D5A527]/15 text-[#D5A527] font-semibold'
+                    : 'text-gray-700 hover:bg-black/5 dark:text-slate-300 dark:hover:bg-white/5 font-medium'
                 )}
-                <button
-                  onClick={() => { handleSignOut(); setIsMobileMenuOpen(false); }}
-                  className="flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950"
-                >
-                  <LogOut className="h-5 w-5" />
-                  {t('signOut')}
-                </button>
-              </>
-            ) : (
-              <>
-                <Link
-                  to="/login"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 dark:text-slate-300 dark:hover:bg-white/5"
-                >
-                  <LogIn className="h-5 w-5 text-[#D5A527]" />
-                  {t('signIn')}
-                </Link>
-                <Link
-                  to="/register"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold text-gray-700 hover:bg-gray-50 dark:text-slate-300 dark:hover:bg-white/5"
-                >
-                  <UserPlus className="h-5 w-5 text-[#D5A527]" />
-                  {t('signUp')}
-                </Link>
-              </>
-            )}
-          </div>
+              >
+                <div className="flex items-center gap-2.5">
+                  <Icon className={clsx('h-4 w-4', isActive ? 'text-[#D5A527]' : 'text-gray-400 dark:text-slate-400')} />
+                  <span>{item.label}</span>
+                </div>
+                {isActive && (
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#D5A527] shadow-sm shadow-[#D5A527]" />
+                )}
+              </Link>
+            );
+          })}
         </div>
+
+        {/* Account Links */}
+        {user && (
+          <div className="mt-1.5 pt-1.5 space-y-0.5">
+            <Link
+              to="/my-bookings"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className={clsx(
+                'group flex items-center justify-between rounded-xl px-3 py-2 text-sm transition-colors',
+                location.pathname === '/my-bookings'
+                  ? 'bg-[#D5A527]/15 text-[#D5A527] font-semibold'
+                  : 'text-gray-700 hover:bg-black/5 dark:text-slate-300 dark:hover:bg-white/5 font-medium'
+              )}
+            >
+              <div className="flex items-center gap-2.5">
+                <CalendarDays className={clsx('h-4 w-4', location.pathname === '/my-bookings' ? 'text-[#D5A527]' : 'text-gray-400 dark:text-slate-400')} />
+                <span>{t('myTickets')}</span>
+              </div>
+              {location.pathname === '/my-bookings' && (
+                <span className="h-1.5 w-1.5 rounded-full bg-[#D5A527] shadow-sm shadow-[#D5A527]" />
+              )}
+            </Link>
+
+            <Link
+              to="/profile"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className={clsx(
+                'group flex items-center justify-between rounded-xl px-3 py-2 text-sm transition-colors',
+                location.pathname === '/profile'
+                  ? 'bg-[#D5A527]/15 text-[#D5A527] font-semibold'
+                  : 'text-gray-700 hover:bg-black/5 dark:text-slate-300 dark:hover:bg-white/5 font-medium'
+              )}
+            >
+              <div className="flex items-center gap-2.5">
+                <User className={clsx('h-4 w-4', location.pathname === '/profile' ? 'text-[#D5A527]' : 'text-gray-400 dark:text-slate-400')} />
+                <span>{t('profile')}</span>
+              </div>
+              {location.pathname === '/profile' && (
+                <span className="h-1.5 w-1.5 rounded-full bg-[#D5A527] shadow-sm shadow-[#D5A527]" />
+              )}
+            </Link>
+
+            {isAdmin && (
+              <Link
+                to="/admin"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={clsx(
+                  'group flex items-center justify-between rounded-xl px-3 py-2 text-sm transition-colors',
+                  location.pathname.startsWith('/admin')
+                    ? 'bg-[#D5A527]/15 text-[#D5A527] font-semibold'
+                    : 'text-gray-700 hover:bg-black/5 dark:text-slate-300 dark:hover:bg-white/5 font-medium'
+                )}
+              >
+                <div className="flex items-center gap-2.5">
+                  <Settings className={clsx('h-4 w-4', location.pathname.startsWith('/admin') ? 'text-[#D5A527]' : 'text-gray-400 dark:text-slate-400')} />
+                  <span>{t('admin')}</span>
+                </div>
+                {location.pathname.startsWith('/admin') && (
+                  <span className="h-1.5 w-1.5 rounded-full bg-[#D5A527] shadow-sm shadow-[#D5A527]" />
+                )}
+              </Link>
+            )}
+
+            <button
+              onClick={() => {
+                handleSignOut();
+                setIsMobileMenuOpen(false);
+              }}
+              className="flex w-full items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-medium text-red-500 transition-colors hover:bg-red-500/10 dark:text-red-400"
+            >
+              <LogOut className="h-4 w-4" />
+              <span>{t('signOut')}</span>
+            </button>
+          </div>
+        )}
+
+        {!user && (
+          <div className="mt-1.5 pt-1.5 space-y-0.5">
+            <Link
+              to="/login"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="group flex items-center justify-between rounded-xl px-3 py-2 text-sm transition-colors text-gray-700 hover:bg-black/5 dark:text-slate-300 dark:hover:bg-white/5 font-medium"
+            >
+              <div className="flex items-center gap-2.5">
+                <LogIn className="h-4 w-4 text-gray-400 dark:text-slate-400" />
+                <span>{t('signIn')}</span>
+              </div>
+            </Link>
+            <Link
+              to="/register"
+              onClick={() => setIsMobileMenuOpen(false)}
+              className="group flex items-center justify-between rounded-xl px-3 py-2 text-sm transition-colors text-gray-700 hover:bg-black/5 dark:text-slate-300 dark:hover:bg-white/5 font-medium"
+            >
+              <div className="flex items-center gap-2.5">
+                <UserPlus className="h-4 w-4 text-[#D5A527]" />
+                <span>{t('signUp')}</span>
+              </div>
+            </Link>
+          </div>
+        )}
+      </div>
     </header>
   );
 }

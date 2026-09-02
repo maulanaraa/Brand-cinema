@@ -96,6 +96,18 @@ export const buildChargeItemDetails = (booking: IBooking): Array<{
     }
   }
 
+  // Midtrans requires the sum of items to exactly equal the transaction gross_amount
+  const grossAmount = Math.round(booking.totalPrice);
+  const currentSum = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+  const diff = grossAmount - currentSum;
+  if (diff !== 0) {
+    if (items.length > 0) {
+      items[0].price += diff;
+    } else {
+      items.push({ id: itemId, name: itemName, price: grossAmount, quantity: 1 });
+    }
+  }
+
   return items;
 };
 
@@ -214,20 +226,14 @@ const findActionUrl = (response: MidtransChargeResponse, names: string[]): strin
 
 export const resolveTransactionId = (
   charge: MidtransChargeResponse,
-  paymentMethod: CorePaymentMethod,
+  _paymentMethod: string,
   orderId: string
 ): string => {
   if (charge.transaction_id) {
     return charge.transaction_id;
   }
 
-  if (paymentMethod === 'credit_card') {
-    return `snap-${orderId}`;
-  }
-
-  throw new Error(
-    charge.status_message || 'No transaction_id returned from Midtrans'
-  );
+  return `snap-${orderId}`;
 };
 
 export const mapChargeResponseToPaymentRecord = (

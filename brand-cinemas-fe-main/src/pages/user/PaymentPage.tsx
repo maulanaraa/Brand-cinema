@@ -357,7 +357,6 @@ export default function PaymentPage() {
 
 
   const goToInstructionPage = (bookingId: string, instruction: PaymentInstruction) => {
-    if (!isValidPaymentInstruction(instruction)) return;
     cachePaymentInstruction(bookingId, instruction);
     navigate(`/bookings/${bookingId}/pay/instruction`, {
       state: { instruction },
@@ -534,6 +533,24 @@ export default function PaymentPage() {
       setPaying(false);
     }
 
+  };
+
+  const handleDirectSimulationPay = async () => {
+    if (!bookingId || !bookingData) return;
+    setPaying(true);
+    setError('');
+    try {
+      await syncConcessionsBeforePay();
+      await bookingService.processPayment(bookingId, 'SUCCESS');
+      clearConcessionCart(bookingId);
+      clearCachedPaymentInstruction(bookingId);
+      bookingService.setConfirmedBookingId(bookingId);
+      toast.success('Pembayaran berhasil dikonfirmasi!');
+      navigate(`/bookings/${bookingId}/success`, { replace: true });
+    } catch {
+      toast.error('Gagal memproses pembayaran simulasi');
+      setPaying(false);
+    }
   };
 
 
@@ -860,6 +877,15 @@ export default function PaymentPage() {
                   {paying ? <LoadingSpinner size="sm" /> : 'Bayar Sekarang'}
                 </button>
               )}
+
+              <button
+                type="button"
+                onClick={handleDirectSimulationPay}
+                disabled={paying}
+                className="mt-2.5 w-full rounded-xl bg-black py-3 text-sm font-medium text-gray-400 hover:text-white transition-all disabled:opacity-50"
+              >
+                Bayar Instan (Mode Simulasi / Demo)
+              </button>
 
               {!selectedMethod && (
 

@@ -17,6 +17,7 @@ import { MIDTRANS_PAYMENT_METHODS } from '@/constants/midtransPaymentMethods';
 import { useAuth } from '@/contexts/AuthContext';
 import { ApiError } from '@/services/apiClient';
 import { paymentService } from '@/services/paymentService';
+import { bookingService } from '@/services/bookingService';
 import { concessionService } from '@/services/concessionService';
 import type { ConcessionItem } from '@/types/concession';
 import type { PaymentInstruction } from '@/types/payment';
@@ -24,6 +25,7 @@ import {
   calculateConcessionTotal,
   getConcessionCart,
   getConcessionCartDetails,
+  clearConcessionCart,
 } from '@/utils/concessionCart';
 import { syncPaymentAndGetRoute } from '@/utils/payment';
 import {
@@ -259,6 +261,23 @@ export default function PaymentInstructionPage() {
     }
   };
 
+  const handleSimulatePayment = async () => {
+    if (!id) return;
+    setChecking(true);
+    try {
+      await bookingService.processPayment(id, 'SUCCESS');
+      clearConcessionCart(id);
+      clearCachedPaymentInstruction(id);
+      bookingService.setConfirmedBookingId(id);
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      toast.success('Pembayaran berhasil dikonfirmasi!');
+      navigate(`/bookings/${id}/success`, { replace: true });
+    } catch {
+      toast.error('Gagal simulasi pembayaran');
+      setChecking(false);
+    }
+  };
+
   const startPolling = () => {
     if (intervalRef.current) return;
     intervalRef.current = setInterval(() => {
@@ -436,6 +455,16 @@ export default function PaymentInstructionPage() {
               {checking ? <LoadingSpinner size="sm" /> : <RefreshCcw className="h-4 w-4" />}
               Cek Status Pembayaran
             </button>
+
+            <button
+              type="button"
+              onClick={handleSimulatePayment}
+              disabled={checking}
+              className="w-full rounded-xl bg-black py-3 text-sm font-medium text-gray-400 hover:text-white transition-all disabled:opacity-50"
+            >
+              Simulasi Pembayaran Berhasil (Test Mode)
+            </button>
+
             <p className="text-center text-xs text-gray-400 dark:text-slate-500">
               Status diperbarui otomatis setiap {POLL_INTERVAL_MS / 1000} detik
             </p>

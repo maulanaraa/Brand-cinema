@@ -196,6 +196,14 @@ type TranslationKey =
   | 'manageBookingsHint'
   | 'roleAdmin'
   | 'roleUser'
+  | 'fnbEyebrow'
+  | 'fnbTitle'
+  | 'fnbSubtitle'
+  | 'fnbSpecialPromo'
+  | 'fnbBannerTitle'
+  | 'fnbBannerDesc'
+  | 'fnbStartingFrom'
+  | 'fnbExploreMenu'
 
 const dictionaries: Record<Language, Record<TranslationKey, string>> = {
   en: {
@@ -378,6 +386,14 @@ const dictionaries: Record<Language, Record<TranslationKey, string>> = {
     manageBookingsHint: 'Manage your bookings and account details from this page.',
     roleAdmin: 'Admin',
     roleUser: 'User',
+    fnbEyebrow: 'Concessions & Refreshments',
+    fnbTitle: 'Enhance Your Movie Experience',
+    fnbSubtitle: 'Freshly popped warm popcorn, signature cold drinks, and value combo packages ready for showtime.',
+    fnbSpecialPromo: 'SPECIAL COMBO',
+    fnbBannerTitle: 'Signature Cinema Combo',
+    fnbBannerDesc: 'Crispy buttered popcorn paired with ice-cold beverages at special combo prices to elevate your movie time.',
+    fnbStartingFrom: 'Starting from',
+    fnbExploreMenu: 'Book Tickets & Snacks',
   },
   id: {
     home: 'Beranda',
@@ -560,6 +576,14 @@ const dictionaries: Record<Language, Record<TranslationKey, string>> = {
     manageBookingsHint: 'Kelola pesanan dan detail akun Anda dari halaman ini.',
     roleAdmin: 'Admin',
     roleUser: 'Pengguna',
+    fnbEyebrow: 'Snack & Minuman Bioskop',
+    fnbTitle: 'Lengkapi Keseruan Nonton Kamu',
+    fnbSubtitle: 'Pilihan popcorn renyah hangat, minuman segar pilihan, dan paket combo hemat favorit bioskop.',
+    fnbSpecialPromo: 'PROMO SPESIAL',
+    fnbBannerTitle: 'Signature Combo Nonton Seru',
+    fnbBannerDesc: 'Popcorn mentega gurih renyah dipadukan dengan minuman dingin segar pilihan untuk menemani momen nontonmu.',
+    fnbStartingFrom: 'Mulai dari',
+    fnbExploreMenu: 'Pesan Tiket & Snack',
   },
   ko: {
     home: '홈',
@@ -741,6 +765,14 @@ const dictionaries: Record<Language, Record<TranslationKey, string>> = {
     manageBookingsHint: '이 페이지에서 예매와 계정 정보를 관리하세요.',
     roleAdmin: '관리자',
     roleUser: '사용자',
+    fnbEyebrow: '스낵 & 음료',
+    fnbTitle: '영화와 함께 즐기는 특별한 스낵',
+    fnbSubtitle: '따뜻하고 바삭한 팝콘과 시원한 음료, 알찬 콤보 세트로 영화를 더욱 특별하게 즐겨보세요.',
+    fnbSpecialPromo: '스페셜 콤보',
+    fnbBannerTitle: '시그니처 시네마 콤보',
+    fnbBannerDesc: '고소한 버터 팝콘과 시원한 음료의 완벽한 조합, 특별 할인가로 만나보세요.',
+    fnbStartingFrom: '시작가',
+    fnbExploreMenu: '티켓 & 스낵 예약',
   },
 }
 
