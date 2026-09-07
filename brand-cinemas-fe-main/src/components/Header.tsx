@@ -33,7 +33,7 @@ export default function Header() {
   ];
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[var(--border-soft)] bg-[var(--surface-page)]/90 backdrop-blur-xl dark:border-white/10 dark:bg-dark-950/85">
+    <header className="sticky top-0 z-50 bg-[var(--surface-page)]/90 backdrop-blur-xl dark:bg-dark-950/85">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16 relative">
           {/* Logo */}
