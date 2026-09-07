@@ -20,7 +20,7 @@ const run = async () => {
 
         // If no tmdbId, try searching TMDB by title
         if (!tmdbId) {
-          const searchRes = await tmdbService.search(movie.title);
+          const searchRes = await tmdbService.searchMovies(movie.title);
           if (searchRes.items && searchRes.items.length > 0) {
             tmdbId = searchRes.items[0].tmdbId;
             movie.tmdbId = tmdbId;
