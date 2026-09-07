@@ -1,20 +1,12 @@
 import {
-  ArrowUpDown,
-  Award,
   Calendar,
-  CheckCircle2,
   ChevronRight,
   Clock,
   Film,
-  Heart,
   LogOut,
-  Mail,
   MapPin,
-  Popcorn,
   Save,
   Settings,
-  Shield,
-  Sparkles,
   Ticket,
   User,
 } from 'lucide-react';
@@ -33,17 +25,12 @@ export default function ProfilePage() {
   const navigate = useNavigate();
   const [bookings, setBookings] = useState<IBooking[]>([]);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'stats' | 'profile' | 'preferences'>('stats');
-  const [sortFilter, setSortFilter] = useState<'all' | 'confirmed' | 'recent'>('all');
+  const [activeTab, setActiveTab] = useState<'stats' | 'profile'>('stats');
 
   // Profile edit state
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
   const [savingProfile, setSavingProfile] = useState(false);
-
-  // Preferences state
-  const [favoriteCinema, setFavoriteCinema] = useState('CinemaID Grand Indonesia');
-  const [favoriteGenres, setFavoriteGenres] = useState<string[]>(['Horror', 'Action', 'Sci-Fi']);
 
   useEffect(() => {
     if (user) {
@@ -80,7 +67,6 @@ export default function ProfilePage() {
     e.preventDefault();
     setSavingProfile(true);
     try {
-      // Simulate save update
       await new Promise((resolve) => setTimeout(resolve, 600));
       toast.success('Profil berhasil diperbarui!');
     } catch {
@@ -88,12 +74,6 @@ export default function ProfilePage() {
     } finally {
       setSavingProfile(false);
     }
-  };
-
-  const toggleGenre = (genre: string) => {
-    setFavoriteGenres((prev) =>
-      prev.includes(genre) ? prev.filter((g) => g !== genre) : [...prev, genre]
-    );
   };
 
   if (!user || loading) {
@@ -106,13 +86,6 @@ export default function ProfilePage() {
 
   // Calculate metrics
   const confirmedBookings = bookings.filter((b) => b.status === 'confirmed');
-  const totalTickets = bookings.reduce(
-    (sum, b) => sum + (b.selected_seats?.length || b.total_seats || 1),
-    0
-  );
-  const uniqueMoviesCount = new Set(
-    confirmedBookings.map((b) => b.showtime?.movie?.title || b.showtime?.movie?._id).filter(Boolean)
-  ).size;
 
   const lastBooking = bookings[0];
   const lastWatchDate = lastBooking
@@ -122,23 +95,6 @@ export default function ProfilePage() {
       )
     : 'Belum ada';
 
-  // Filter bookings for list
-  const filteredBookings = bookings.filter((b) => {
-    if (sortFilter === 'confirmed') return b.status === 'confirmed';
-    return true;
-  });
-
-  const availableGenres = [
-    'Action',
-    'Horror',
-    'Comedy',
-    'Drama',
-    'Sci-Fi',
-    'Thriller',
-    'Romance',
-    'Animation',
-  ];
-
   return (
     <div className="min-h-screen bg-gray-50/50 py-10 dark:bg-dark-950 text-gray-900 dark:text-white transition-colors">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
@@ -147,7 +103,7 @@ export default function ProfilePage() {
           <div>
             <h1 className="text-3xl font-display font-black tracking-tight">User Profile</h1>
             <p className="mt-1 text-sm text-gray-500 dark:text-slate-400">
-              Kelola informasi akun, preferensi menonton, dan aktivitas tiket CinemaID Anda.
+              Kelola informasi akun dan aktivitas tiket CinemaID Anda.
             </p>
           </div>
           {isAdmin && (
@@ -162,22 +118,17 @@ export default function ProfilePage() {
         </div>
 
         {/* 2-Column Grid Layout matching reference */}
-        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[340px_1fr]">
-          {/* LEFT COLUMN: Identity & Quick Stats Card */}
+        <div className="grid grid-cols-1 gap-8 lg:grid-cols-[320px_1fr]">
+          {/* LEFT COLUMN: Clean Identity Card without badges or mini counter boxes */}
           <div className="space-y-6">
             <div className="overflow-hidden rounded-2xl bg-white shadow-xl shadow-black/5 dark:bg-dark-900/90 dark:shadow-2xl dark:shadow-black/40">
               {/* Cover Banner with Cinema Gold Gradient */}
-              <div className="relative h-28 w-full bg-gradient-to-r from-[#A67C2E]/40 via-[#D5A527]/25 to-dark-900 p-4">
-                <span className="absolute right-3 top-3 inline-flex items-center gap-1.5 rounded-full bg-black/40 px-2.5 py-1 text-[11px] font-bold uppercase tracking-wider text-[#D5A527] backdrop-blur-md">
-                  <Sparkles className="h-3 w-3" />
-                  Premiere Member
-                </span>
-              </div>
+              <div className="relative h-28 w-full bg-gradient-to-r from-[#A67C2E]/40 via-[#D5A527]/25 to-dark-900" />
 
               {/* Profile Avatar & Info */}
               <div className="relative px-6 pb-6 pt-0">
                 {/* Avatar overlapping banner */}
-                <div className="-mt-12 mb-4 flex items-end justify-between">
+                <div className="-mt-12 mb-4">
                   <div className="relative h-20 w-20 rounded-full border-4 border-white bg-dark-950 p-0.5 shadow-xl dark:border-dark-900">
                     {user.avatarUrl ? (
                       <img
@@ -191,10 +142,6 @@ export default function ProfilePage() {
                       </div>
                     )}
                   </div>
-                  <span className="mb-2 inline-flex items-center gap-1 rounded-md bg-[#D5A527]/15 px-2.5 py-1 text-xs font-bold text-[#D5A527]">
-                    <Shield className="h-3.5 w-3.5" />
-                    {user.role === 'admin' ? 'Administrator' : 'Cinema VIP'}
-                  </span>
                 </div>
 
                 {/* Name & Email */}
@@ -202,33 +149,13 @@ export default function ProfilePage() {
                   <h2 className="text-xl font-bold leading-tight text-gray-900 dark:text-white">
                     {user.fullName || 'Member CinemaID'}
                   </h2>
-                  <p className="mt-0.5 text-sm text-gray-500 dark:text-slate-400 truncate">
+                  <p className="mt-1 text-sm text-gray-500 dark:text-slate-400 truncate">
                     {user.email}
                   </p>
                 </div>
 
-                {/* 2 Mini Cards (like 01 Events Created | 24 Events Attended in reference) */}
-                <div className="mt-6 grid grid-cols-2 gap-3">
-                  <div className="rounded-xl bg-gray-50 p-3.5 text-left dark:bg-dark-950/70">
-                    <span className="block text-2xl font-black text-gray-900 dark:text-white">
-                      {String(totalTickets).padStart(2, '0')}
-                    </span>
-                    <span className="mt-0.5 block text-xs font-medium text-gray-500 dark:text-slate-400">
-                      Tiket Dipesan
-                    </span>
-                  </div>
-                  <div className="rounded-xl bg-gray-50 p-3.5 text-left dark:bg-dark-950/70">
-                    <span className="block text-2xl font-black text-[#D5A527]">
-                      {String(uniqueMoviesCount).padStart(2, '0')}
-                    </span>
-                    <span className="mt-0.5 block text-xs font-medium text-gray-500 dark:text-slate-400">
-                      Film Ditonton
-                    </span>
-                  </div>
-                </div>
-
                 {/* Account Action Buttons */}
-                <div className="mt-6 pt-4 border-t border-gray-100 dark:border-white/[0.06]">
+                <div className="mt-6 pt-5 border-t border-gray-100 dark:border-white/[0.06]">
                   <button
                     type="button"
                     onClick={handleSignOut}
@@ -244,7 +171,7 @@ export default function ProfilePage() {
 
           {/* RIGHT COLUMN: Navigation Tabs, 4 Metric Stats, and Activity List */}
           <div className="space-y-6">
-            {/* Tab Navigation Header (matching reference layout) */}
+            {/* Tab Navigation Header: Only My Movie Stats and Profile Settings */}
             <div className="flex border-b border-gray-200 dark:border-white/[0.08] gap-8">
               <button
                 type="button"
@@ -271,27 +198,14 @@ export default function ProfilePage() {
                 <User className="h-4 w-4 text-[#D5A527]" />
                 <span>Profile Settings</span>
               </button>
-
-              <button
-                type="button"
-                onClick={() => setActiveTab('preferences')}
-                className={`flex items-center gap-2 pb-3.5 text-sm font-bold transition-all relative ${
-                  activeTab === 'preferences'
-                    ? 'text-gray-900 dark:text-white after:absolute after:bottom-0 after:left-0 after:right-0 after:h-0.5 after:bg-[#D5A527]'
-                    : 'text-gray-500 dark:text-slate-400 hover:text-gray-900 dark:hover:text-white'
-                }`}
-              >
-                <Heart className="h-4 w-4 text-[#D5A527]" />
-                <span>Preferences</span>
-              </button>
             </div>
 
-            {/* TAB 1: MOVIE STATS & TICKETS (Exact match to reference view) */}
+            {/* TAB 1: MOVIE STATS & TICKETS */}
             {activeTab === 'stats' && (
               <div className="space-y-6">
-                {/* 4 Stat Cards in 2x2 Grid (like Sessions Attended, Attendance Rate, etc.) */}
+                {/* 4 Stat Cards in 2x2 Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {/* Stat 1: Tiket Aktif */}
+                  {/* Stat 1: Tiket Siap Ditonton */}
                   <div className="rounded-2xl bg-white p-5 shadow-lg shadow-black/5 dark:bg-dark-900/90 dark:shadow-2xl dark:shadow-black/30">
                     <p className="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-slate-400">
                       Tiket Siap Ditonton
@@ -301,7 +215,7 @@ export default function ProfilePage() {
                     </p>
                   </div>
 
-                  {/* Stat 2: Total Riwayat Booking */}
+                  {/* Stat 2: Total Transaksi */}
                   <div className="rounded-2xl bg-white p-5 shadow-lg shadow-black/5 dark:bg-dark-900/90 dark:shadow-2xl dark:shadow-black/30">
                     <p className="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-slate-400">
                       Total Transaksi
@@ -311,13 +225,13 @@ export default function ProfilePage() {
                     </p>
                   </div>
 
-                  {/* Stat 3: Bioskop Favorit */}
+                  {/* Stat 3: Bioskop Pilihan */}
                   <div className="rounded-2xl bg-white p-5 shadow-lg shadow-black/5 dark:bg-dark-900/90 dark:shadow-2xl dark:shadow-black/30">
                     <p className="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-slate-400">
                       Bioskop Pilihan
                     </p>
                     <p className="mt-2 text-xl font-bold text-gray-900 dark:text-white truncate">
-                      {favoriteCinema}
+                      CinemaID Grand Indonesia
                     </p>
                   </div>
 
@@ -332,44 +246,25 @@ export default function ProfilePage() {
                   </div>
                 </div>
 
-                {/* Section Header with Filter / Sort (like "Created by You" & "Sort" in reference) */}
-                <div className="flex flex-wrap items-center justify-between gap-4 pt-2">
+                {/* Section Header with "Lihat Semua" Link */}
+                <div className="flex items-center justify-between gap-4 pt-2">
                   <h3 className="text-lg font-bold text-gray-900 dark:text-white">
                     Riwayat Tiket & Aktivitas
                   </h3>
 
-                  <div className="flex items-center gap-2">
-                    <div className="inline-flex rounded-xl bg-gray-100 p-1 dark:bg-dark-900">
-                      <button
-                        type="button"
-                        onClick={() => setSortFilter('all')}
-                        className={`rounded-lg px-3 py-1 text-xs font-semibold transition ${
-                          sortFilter === 'all'
-                            ? 'bg-white shadow-sm dark:bg-dark-800 text-gray-900 dark:text-white'
-                            : 'text-gray-500 hover:text-gray-900 dark:text-slate-400 dark:hover:text-white'
-                        }`}
-                      >
-                        Semua ({bookings.length})
-                      </button>
-                      <button
-                        type="button"
-                        onClick={() => setSortFilter('confirmed')}
-                        className={`rounded-lg px-3 py-1 text-xs font-semibold transition ${
-                          sortFilter === 'confirmed'
-                            ? 'bg-white shadow-sm dark:bg-dark-800 text-[#D5A527]'
-                            : 'text-gray-500 hover:text-gray-900 dark:text-slate-400 dark:hover:text-white'
-                        }`}
-                      >
-                        Aktif ({confirmedBookings.length})
-                      </button>
-                    </div>
-                  </div>
+                  <Link
+                    to="/my-bookings"
+                    className="inline-flex items-center gap-1.5 rounded-xl bg-gray-100 px-3.5 py-1.5 text-xs font-bold text-gray-700 hover:bg-gray-200 dark:bg-dark-900 dark:text-[#D5A527] dark:hover:bg-dark-800 transition shadow-sm"
+                  >
+                    <span>Lihat Semua</span>
+                    <ChevronRight className="h-3.5 w-3.5" />
+                  </Link>
                 </div>
 
-                {/* Vertical List of Ticket Cards (matching list in reference image) */}
+                {/* Vertical List of Ticket Cards */}
                 <div className="space-y-3">
-                  {filteredBookings.length > 0 ? (
-                    filteredBookings.map((booking) => {
+                  {bookings.length > 0 ? (
+                    bookings.map((booking) => {
                       const movie = booking.showtime?.movie;
                       const showDate = booking.showtime?.show_date
                         ? new Date(booking.showtime.show_date).toLocaleDateString(
@@ -524,67 +419,6 @@ export default function ProfilePage() {
                     </button>
                   </div>
                 </form>
-              </div>
-            )}
-
-            {/* TAB 3: CINEMA PREFERENCES */}
-            {activeTab === 'preferences' && (
-              <div className="rounded-2xl bg-white p-6 shadow-xl shadow-black/5 dark:bg-dark-900/90 dark:shadow-2xl dark:shadow-black/40 space-y-6">
-                <div>
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
-                    Bioskop Favorit
-                  </h3>
-                  <p className="text-xs text-gray-500 dark:text-slate-400 mb-4">
-                    Lokasi bioskop default untuk menampilkan jadwal penayangan utama Anda.
-                  </p>
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-w-xl">
-                    {['CinemaID Grand Indonesia', 'CinemaID Central Park', 'CinemaID Senayan City'].map(
-                      (cinema) => (
-                        <button
-                          key={cinema}
-                          type="button"
-                          onClick={() => setFavoriteCinema(cinema)}
-                          className={`flex items-center gap-3 p-3.5 rounded-xl text-left transition ${
-                            favoriteCinema === cinema
-                              ? 'bg-[#D5A527]/15 ring-2 ring-[#D5A527] text-gray-900 dark:text-white'
-                              : 'bg-gray-50 dark:bg-dark-950/70 text-gray-600 dark:text-slate-300 hover:bg-gray-100 dark:hover:bg-dark-800'
-                          }`}
-                        >
-                          <MapPin className="h-4 w-4 text-[#D5A527] shrink-0" />
-                          <span className="font-semibold text-sm">{cinema}</span>
-                        </button>
-                      )
-                    )}
-                  </div>
-                </div>
-
-                <div className="pt-4 border-t border-gray-100 dark:border-white/[0.06]">
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white mb-2">
-                    Genre Film Kesukaan
-                  </h3>
-                  <p className="text-xs text-gray-500 dark:text-slate-400 mb-4">
-                    Pilih genre favorit Anda untuk rekomendasi film yang lebih personal.
-                  </p>
-                  <div className="flex flex-wrap gap-2.5">
-                    {availableGenres.map((genre) => {
-                      const isSelected = favoriteGenres.includes(genre);
-                      return (
-                        <button
-                          key={genre}
-                          type="button"
-                          onClick={() => toggleGenre(genre)}
-                          className={`rounded-full px-4 py-2 text-xs font-bold transition ${
-                            isSelected
-                              ? 'bg-[#D5A527] text-dark-950 shadow-md shadow-[#D5A527]/20'
-                              : 'bg-gray-100 text-gray-600 hover:bg-gray-200 dark:bg-dark-950 dark:text-slate-300 dark:hover:bg-dark-800'
-                          }`}
-                        >
-                          {genre}
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
               </div>
             )}
           </div>
