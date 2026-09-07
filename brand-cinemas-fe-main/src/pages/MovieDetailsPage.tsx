@@ -340,11 +340,11 @@ export default function MovieDetailsPage() {
                       }}
                       className={`min-w-24 rounded-md !border-0 px-4 py-3 text-left transition ${
                         selectedDate === date
-                          ? 'bg-primary-500/20 text-primary-500 ring-2 ring-primary-500'
+                          ? 'bg-[#D5A527] text-dark-950 font-bold shadow-lg shadow-[#D5A527]/20'
                           : 'bg-[var(--surface-muted)] dark:bg-dark-950 text-gray-600 dark:text-slate-300 hover:bg-[var(--surface-raised)] dark:hover:bg-dark-800'
                       }`}
                     >
-                      <span className="block text-xs uppercase opacity-70">
+                      <span className={`block text-xs uppercase ${selectedDate === date ? 'opacity-90 font-bold' : 'opacity-70'}`}>
                         {new Date(`${date}T00:00:00`).toLocaleDateString(locale, { weekday: 'short' })}
                       </span>
                       <span className="block font-bold">
@@ -363,7 +363,7 @@ export default function MovieDetailsPage() {
                         onClick={() => handleSelectShowtime(showtime)}
                         className={`w-full rounded-lg !border-0 p-4 text-left transition ${
                           isActive
-                            ? 'bg-primary-500/20 ring-2 ring-primary-500'
+                            ? 'bg-[#D5A527]/20 shadow-md shadow-black/20'
                             : 'bg-[var(--surface-muted)] dark:bg-dark-950/80 hover:bg-[var(--surface-raised)] dark:hover:bg-dark-800'
                         }`}
                       >
