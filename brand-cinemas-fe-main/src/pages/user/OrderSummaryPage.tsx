@@ -302,7 +302,7 @@ export default function OrderSummaryPage() {
                   </div>
                 </div>
               </div>
-              <div className="mt-4 flex justify-between border-t border-gray-200 pt-4 dark:border-dark-700">
+              <div className="mt-4 flex justify-between border-t border-gray-100 pt-4 dark:border-white/[0.06]">
                 <span className="text-gray-500 dark:text-slate-400">
                   {booking.selected_seats.length} tiket
                 </span>
@@ -396,7 +396,7 @@ export default function OrderSummaryPage() {
                 )}
               </div>
 
-              <div className="mt-4 flex justify-between border-t border-gray-200 pt-4 text-lg font-bold dark:border-dark-700">
+              <div className="mt-4 flex justify-between border-t border-gray-100 pt-4 text-lg font-bold dark:border-white/[0.06]">
                 <span>Total</span>
                 <span className="text-accent-600 dark:text-accent-300">{formatIdr(grandTotal)}</span>
               </div>

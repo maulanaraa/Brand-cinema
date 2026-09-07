@@ -108,7 +108,7 @@
   }
 
   .cinema-panel {
-    @apply rounded-lg border border-[var(--border-soft)] bg-[var(--surface-card)] shadow-lg shadow-black/5 dark:border-white/[0.08] dark:bg-dark-900 dark:shadow-2xl dark:shadow-black/30;
+    @apply rounded-xl border-0 bg-[var(--surface-card)] shadow-lg shadow-black/5 dark:bg-dark-900 dark:shadow-2xl dark:shadow-black/30;
   }
 
   .cinema-badge {

@@ -29,10 +29,10 @@ export default function ConcessionItemCard({
   return (
     <article
       className={clsx(
-        'group w-full min-w-0 overflow-hidden rounded-2xl border transition-all duration-200',
+        'group w-full min-w-0 overflow-hidden rounded-2xl !border-0 transition-all duration-200',
         isSelected
-          ? 'border-primary-500/50 bg-primary-500/[0.06] shadow-lg shadow-primary-500/10 ring-1 ring-primary-500/30'
-          : 'border-gray-200/80 bg-white hover:border-gray-300 hover:shadow-md dark:border-dark-600 dark:bg-dark-900/70 dark:hover:border-dark-500',
+          ? 'bg-primary-500/[0.12] shadow-lg shadow-primary-500/10'
+          : 'bg-gray-50/80 hover:bg-gray-100 hover:shadow-md dark:bg-dark-950/70 dark:hover:bg-dark-800/80',
       )}
     >
       <div className="flex w-full min-w-0 gap-3 p-3 sm:gap-4 sm:p-4">
@@ -67,7 +67,7 @@ export default function ConcessionItemCard({
           </div>
 
           <div className="flex w-full min-w-0 flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
-            <div className="inline-flex w-fit shrink-0 items-center gap-1 rounded-xl border border-gray-200 bg-gray-50 p-1 dark:border-dark-600 dark:bg-dark-800">
+            <div className="inline-flex w-fit shrink-0 items-center gap-1 rounded-xl !border-0 bg-gray-200/60 p-1 dark:bg-dark-800">
               <button
                 type="button"
                 onClick={onDecrease}

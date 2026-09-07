@@ -677,47 +677,26 @@ export default function PaymentPage() {
                           disabled={paying}
 
                           className={[
-
-                            'w-full rounded-lg border p-4 text-left transition-colors',
-
+                            'w-full rounded-xl !border-0 p-4 text-left transition-all',
                             isSelected
-
-                              ? 'border-primary-500 bg-primary-500/10 ring-1 ring-primary-500/40'
-
-                              : 'border-gray-200 hover:border-primary-500/40 dark:border-dark-700 dark:hover:border-primary-500/40',
-
+                              ? 'bg-primary-500/20 text-white shadow-md'
+                              : 'bg-gray-50 text-gray-800 hover:bg-gray-100 dark:bg-dark-950/70 dark:text-slate-200 dark:hover:bg-dark-800',
                           ].join(' ')}
-
                         >
-
                           <div className="flex items-center justify-between gap-3">
-
                             <div>
-
                               <p className="font-semibold">{method.label}</p>
-
                               <p className="mt-0.5 text-sm text-gray-500 dark:text-slate-400">
-
                                 {method.description}
-
                               </p>
-
                             </div>
-
                             <span
-
                               className={[
-
-                                'flex h-5 w-5 shrink-0 items-center justify-center rounded-full border',
-
+                                'flex h-5 w-5 shrink-0 items-center justify-center rounded-full !border-0',
                                 isSelected
-
-                                  ? 'border-primary-500 bg-primary-500 text-white'
-
-                                  : 'border-gray-300 dark:border-dark-600',
-
+                                  ? 'bg-[#D5A527] text-dark-950 font-bold'
+                                  : 'bg-gray-200 dark:bg-dark-800',
                               ].join(' ')}
-
                             >
 
                               {isSelected && <Check className="h-3 w-3" />}
@@ -796,34 +775,22 @@ export default function PaymentPage() {
 
               )}
 
-              <div className="border-t border-gray-200 pt-4 space-y-2 dark:border-dark-700">
-
+              <div className="border-t border-gray-100 pt-4 space-y-2 dark:border-white/[0.06]">
                 <div className="flex justify-between">
-
                   <span className="text-gray-500 dark:text-slate-400">Date</span>
-
                   <span>{new Date(showtime.show_date).toLocaleDateString()}</span>
-
                 </div>
-
                 <div className="flex justify-between">
-
                   <span className="text-gray-500 dark:text-slate-400">Time</span>
-
                   <span>{showtime.start_time}</span>
-
                 </div>
-
                 <div className="flex justify-between">
-
                   <span className="text-gray-500 dark:text-slate-400">Seats</span>
-
                   <span>{selectedSeats.join(', ')}</span>
-
                 </div>
 
                 {concessionDetails.length > 0 && (
-                  <div className="border-t border-gray-200 pt-3 dark:border-dark-700">
+                  <div className="border-t border-gray-100 pt-3 dark:border-white/[0.06]">
                     <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-slate-400">
                       Makanan & Minuman
                     </p>
@@ -839,10 +806,9 @@ export default function PaymentPage() {
                     </div>
                   </div>
                 )}
-
               </div>
 
-              <div className="border-t border-gray-200 pt-4 dark:border-dark-700">
+              <div className="border-t border-gray-100 pt-4 dark:border-white/[0.06]">
 
                 {concessionTotal > 0 && (
                   <div className="mb-2 flex justify-between text-sm">
