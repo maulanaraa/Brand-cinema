@@ -1,9 +1,12 @@
+import { OAuth2Client } from 'google-auth-library';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { getGoogleConfig } from '../config/google';
 import { AppError } from '../helpers/response.helper';
 import { HTTP_STATUS } from '../constants';
 import { getGoogleCertByKid, tryRefreshGoogleCerts } from './google-certs';
 import { logger } from './logger.util';
+
+const oauthClient = new OAuth2Client();
 
 export interface GoogleUserInfo {
   googleId: string;
@@ -69,26 +72,15 @@ export const verifyGoogleIdToken = async (idToken: string): Promise<GoogleUserIn
   const trimmedToken = idToken.trim();
   const { clientIds } = getGoogleConfig();
 
+  // 1. Primary verification using Google's official OAuth2Client
   try {
-    let payload: GoogleTokenPayload;
+    const ticket = await oauthClient.verifyIdToken({
+      idToken: trimmedToken,
+      audience: clientIds.length === 1 ? clientIds[0] : clientIds,
+    });
 
-    try {
-      payload = verifyWithCachedCerts(trimmedToken, clientIds);
-    } catch (error) {
-      const message = error instanceof Error ? error.message : 'unknown';
-
-      if (message.startsWith('Unknown token key id:')) {
-        const refreshed = await tryRefreshGoogleCerts();
-        if (!refreshed) {
-          throw error;
-        }
-        payload = verifyWithCachedCerts(trimmedToken, clientIds);
-      } else {
-        throw error;
-      }
-    }
-
-    if (!payload.sub || !payload.email) {
+    const payload = ticket.getPayload();
+    if (!payload || !payload.sub || !payload.email) {
       throw new AppError('Invalid Google token', HTTP_STATUS.UNAUTHORIZED);
     }
 
@@ -98,21 +90,56 @@ export const verifyGoogleIdToken = async (idToken: string): Promise<GoogleUserIn
       name: payload.name || payload.email.split('@')[0],
       emailVerified: payload.email_verified === true,
     };
-  } catch (error) {
-    if (error instanceof AppError) {
-      throw error;
+  } catch (primaryError) {
+    if (primaryError instanceof AppError) {
+      throw primaryError;
     }
 
-    const decoded = decodeJwtPart<Record<string, unknown>>(trimmedToken.split('.')[1] || '');
-
-    logger.warn('Google token verification failed', {
-      audiences: clientIds,
-      tokenAudience: decoded?.aud ?? null,
-      tokenAzp: decoded?.azp ?? null,
-      tokenIssuer: decoded?.iss ?? null,
-      error: error instanceof Error ? error.message : 'unknown',
+    logger.warn('Google official verifyIdToken failed, attempting cached fallback...', {
+      error: primaryError instanceof Error ? primaryError.message : 'unknown',
     });
 
-    throw new AppError('Invalid Google token', HTTP_STATUS.UNAUTHORIZED);
+    // 2. Fallback to cached certs if official library had network/DNS issue
+    try {
+      let payload: GoogleTokenPayload;
+
+      try {
+        payload = verifyWithCachedCerts(trimmedToken, clientIds);
+      } catch (error) {
+        const refreshed = await tryRefreshGoogleCerts();
+        if (!refreshed) {
+          throw error;
+        }
+        payload = verifyWithCachedCerts(trimmedToken, clientIds);
+      }
+
+      if (!payload.sub || !payload.email) {
+        throw new AppError('Invalid Google token', HTTP_STATUS.UNAUTHORIZED);
+      }
+
+      return {
+        googleId: payload.sub,
+        email: payload.email.toLowerCase(),
+        name: payload.name || payload.email.split('@')[0],
+        emailVerified: payload.email_verified === true,
+      };
+    } catch (fallbackError) {
+      if (fallbackError instanceof AppError) {
+        throw fallbackError;
+      }
+
+      const decoded = decodeJwtPart<Record<string, unknown>>(trimmedToken.split('.')[1] || '');
+
+      logger.warn('Google token verification failed completely', {
+        audiences: clientIds,
+        tokenAudience: decoded?.aud ?? null,
+        tokenAzp: decoded?.azp ?? null,
+        tokenIssuer: decoded?.iss ?? null,
+        primaryError: primaryError instanceof Error ? primaryError.message : 'unknown',
+        fallbackError: fallbackError instanceof Error ? fallbackError.message : 'unknown',
+      });
+
+      throw new AppError('Invalid Google token', HTTP_STATUS.UNAUTHORIZED);
+    }
   }
 };

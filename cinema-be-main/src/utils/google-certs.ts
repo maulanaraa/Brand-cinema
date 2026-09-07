@@ -10,10 +10,22 @@ export type GoogleCertMap = Record<string, string>;
 
 const readCertFile = (): GoogleCertMap => {
   if (!fs.existsSync(CERTS_PATH)) {
-    throw new Error(`Missing cached Google OAuth certificates at ${CERTS_PATH}`);
+    const altPath = path.resolve(__dirname, '../../config/google-oauth-certs.json');
+    if (fs.existsSync(altPath)) {
+      try {
+        return JSON.parse(fs.readFileSync(altPath, 'utf-8')) as GoogleCertMap;
+      } catch {
+        return {};
+      }
+    }
+    return {};
   }
 
-  return JSON.parse(fs.readFileSync(CERTS_PATH, 'utf-8')) as GoogleCertMap;
+  try {
+    return JSON.parse(fs.readFileSync(CERTS_PATH, 'utf-8')) as GoogleCertMap;
+  } catch {
+    return {};
+  }
 };
 
 const writeCertFile = (certs: GoogleCertMap): void => {
@@ -33,7 +45,7 @@ const downloadGoogleCerts = (): Promise<GoogleCertMap> =>
   new Promise((resolve, reject) => {
     const request = https.get(
       GOOGLE_CERTS_URL,
-      { family: 4, timeout: 10000 },
+      { timeout: 10000 },
       (response) => {
         if ((response.statusCode ?? 0) >= 400) {
           reject(new Error(`Google certs HTTP ${response.statusCode}`));

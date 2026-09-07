@@ -8,6 +8,7 @@ import { BookingStatus, PaymentStatus } from '../types';
 import { env } from '../config/env';
 import { isSupportedPaymentMethod, PAYMENT_METHOD_OPTIONS } from '../config/midtransPaymentMethods';
 import {
+  CorePaymentMethod,
   MidtransChargeResponse,
   PaymentInstructionResponse,
 } from '../types/payment.types';
@@ -233,7 +234,7 @@ export class PaymentService {
   private async chargeWithSnapFallback(
     booking: Awaited<ReturnType<typeof bookingRepository.findByIdAndUser>>,
     user: NonNullable<Awaited<ReturnType<typeof userRepository.findById>>>,
-    paymentMethod: string = 'credit_card'
+    paymentMethod: CorePaymentMethod = 'credit_card'
   ): Promise<PaymentInstructionResponse> {
     if (!booking) {
       throw new AppError('Booking not found', HTTP_STATUS.NOT_FOUND);
