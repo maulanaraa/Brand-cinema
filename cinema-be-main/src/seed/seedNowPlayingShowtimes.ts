@@ -6,7 +6,7 @@ import { Hall } from '../models/Hall';
 import { Showtime } from '../models/Showtime';
 import { logger } from '../utils/logger.util';
 
-const TIMES = ['10:30', '13:15', '15:45', '18:30', '21:15'];
+const TIMES = ['13:00', '16:30', '20:00'];
 const PRICES = [45000, 50000, 55000];
 
 async function seedNowPlayingShowtimes(): Promise<void> {

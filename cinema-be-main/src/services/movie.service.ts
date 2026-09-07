@@ -19,7 +19,9 @@ export interface CreateMovieDto {
   isActive?: boolean;
   tmdbId?: number;
   director?: string;
+  directorPhoto?: string;
   cast?: string[];
+  castMembers?: Array<{ name: string; character?: string; photo?: string }>;
 }
 
 export type UpdateMovieDto = Partial<CreateMovieDto>;
@@ -67,7 +69,9 @@ export class MovieService {
       isActive: dto.isActive ?? true,
       tmdbId: dto.tmdbId,
       director: dto.director ?? '',
+      directorPhoto: dto.directorPhoto ?? '',
       cast: dto.cast ?? [],
+      castMembers: dto.castMembers ?? [],
     };
 
     return movieRepository.create(movieData);

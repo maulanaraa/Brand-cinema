@@ -247,21 +247,83 @@ export default function MovieDetailsPage() {
               <p className="text-gray-600 dark:text-slate-300 leading-relaxed text-lg">{movie.description}</p>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <h2 className="text-xl font-semibold mb-2">{t('director')}</h2>
-                <p className="text-gray-600 dark:text-slate-300">{movie.director || t('toBeAnnounced')}</p>
+            {/* Director Section */}
+            <div className="space-y-3">
+              <p className="section-eyebrow">{t('director')}</p>
+              <div className="flex items-center gap-4 p-4 rounded-xl bg-[var(--surface-muted)] dark:bg-dark-900/60 max-w-md">
+                {movie.directorPhoto ? (
+                  <img
+                    src={movie.directorPhoto}
+                    alt={movie.director || 'Director'}
+                    className="w-16 h-16 rounded-full object-cover shadow-md"
+                    onError={(e) => {
+                      e.currentTarget.style.display = 'none';
+                    }}
+                  />
+                ) : (
+                  <div className="w-16 h-16 rounded-full bg-primary-500/20 text-primary-500 flex items-center justify-center font-bold text-xl">
+                    {movie.director ? movie.director.charAt(0) : '🎬'}
+                  </div>
+                )}
+                <div>
+                  <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                    {movie.director || t('toBeAnnounced')}
+                  </h3>
+                  <span className="text-xs uppercase tracking-wider text-[#D5A527] font-semibold">
+                    {t('director')}
+                  </span>
+                </div>
               </div>
-              <div>
-                <h2 className="text-xl font-semibold mb-2">{t('cast')}</h2>
-                <p className="text-gray-600 dark:text-slate-300">{movie.cast?.join(', ') || t('toBeAnnounced')}</p>
-              </div>
+            </div>
+
+            {/* Cast Section (Below Director) */}
+            <div className="space-y-4">
+              <p className="section-eyebrow">{t('cast')}</p>
+              {movie.castMembers && movie.castMembers.length > 0 ? (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                  {movie.castMembers.map((member, idx) => (
+                    <div
+                      key={`${member.name}-${idx}`}
+                      className="group flex flex-col items-center text-center p-3 rounded-xl bg-[var(--surface-muted)] dark:bg-dark-900/60 transition duration-300 hover:bg-[var(--surface-raised)] dark:hover:bg-dark-800"
+                    >
+                      <div className="w-20 h-20 mb-3 rounded-full overflow-hidden bg-gray-200 dark:bg-dark-950 shadow-inner group-hover:scale-105 transition-transform duration-300">
+                        {member.photo ? (
+                          <img
+                            src={member.photo}
+                            alt={member.name}
+                            className="w-full h-full object-cover object-top"
+                            onError={(e) => {
+                              e.currentTarget.style.display = 'none';
+                            }}
+                          />
+                        ) : (
+                          <div className="w-full h-full flex items-center justify-center text-gray-400 dark:text-slate-500 text-lg font-semibold">
+                            {member.name.charAt(0)}
+                          </div>
+                        )}
+                      </div>
+                      <h4 className="text-sm font-semibold text-gray-900 dark:text-white line-clamp-1 group-hover:text-primary-400 transition-colors">
+                        {member.name}
+                      </h4>
+                      {member.character && (
+                        <p className="text-xs text-gray-500 dark:text-slate-400 line-clamp-1 mt-0.5">
+                          {member.character}
+                        </p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-gray-600 dark:text-slate-300">
+                  {movie.cast?.join(', ') || t('toBeAnnounced')}
+                </p>
+              )}
             </div>
           </div>
 
           <aside className="lg:col-span-1">
             {showtimes.length > 0 ? (
-              <div className="cinema-panel sticky top-24 p-6">
+              <div className="cinema-panel !border-0 sticky top-24 p-6 shadow-xl">
                 <p className="section-eyebrow mb-3">{t('bookNow')}</p>
                 <h2 className="text-2xl font-semibold mb-4">{t('selectShowtime')}</h2>
                 <div className="mb-5 flex items-center gap-2 rounded-md bg-[var(--surface-muted)] dark:bg-dark-950 px-3 py-2 text-sm text-gray-600 dark:text-slate-300">
@@ -276,10 +338,10 @@ export default function MovieDetailsPage() {
                         setSelectedDate(date);
                         setSelectedShowtime(null);
                       }}
-                      className={`min-w-24 rounded-md border px-4 py-3 text-left transition ${
+                      className={`min-w-24 rounded-md !border-0 px-4 py-3 text-left transition ${
                         selectedDate === date
-                          ? 'bg-primary-500/15 border-primary-500 text-primary-500'
-                          : 'border-transparent bg-[var(--surface-muted)] dark:bg-dark-950 text-gray-600 dark:text-slate-300 hover:bg-[var(--surface-raised)] dark:hover:bg-dark-800'
+                          ? 'bg-primary-500/20 text-primary-500 ring-2 ring-primary-500'
+                          : 'bg-[var(--surface-muted)] dark:bg-dark-950 text-gray-600 dark:text-slate-300 hover:bg-[var(--surface-raised)] dark:hover:bg-dark-800'
                       }`}
                     >
                       <span className="block text-xs uppercase opacity-70">
@@ -299,10 +361,10 @@ export default function MovieDetailsPage() {
                         key={showtime._id}
                         type="button"
                         onClick={() => handleSelectShowtime(showtime)}
-                        className={`w-full rounded-lg border p-4 text-left transition hover:border-primary-500 ${
+                        className={`w-full rounded-lg !border-0 p-4 text-left transition ${
                           isActive
-                            ? 'bg-primary-500/15 border-primary-500'
-                            : 'border-gray-200 dark:border-dark-700'
+                            ? 'bg-primary-500/20 ring-2 ring-primary-500'
+                            : 'bg-[var(--surface-muted)] dark:bg-dark-950/80 hover:bg-[var(--surface-raised)] dark:hover:bg-dark-800'
                         }`}
                       >
                         <div className="flex items-center justify-between">

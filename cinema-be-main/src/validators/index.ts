@@ -80,6 +80,7 @@ export const createMovieValidator: ValidationChain[] = [
     .withMessage('isActive must be boolean')
     .customSanitizer((value) => value === true || value === 'true'),
   body('director').optional().trim(),
+  body('directorPhoto').optional().trim(),
   body('cast')
     .optional()
     .customSanitizer((val) => {
@@ -87,6 +88,7 @@ export const createMovieValidator: ValidationChain[] = [
       if (typeof val === 'string') return val.split(',').map((s) => s.trim()).filter(Boolean);
       return [];
     }),
+  body('castMembers').optional().isArray(),
 ];
 
 export const updateMovieValidator: ValidationChain[] = [
@@ -121,6 +123,7 @@ export const updateMovieValidator: ValidationChain[] = [
     .withMessage('isActive must be boolean')
     .customSanitizer((value) => value === true || value === 'true'),
   body('director').optional().trim(),
+  body('directorPhoto').optional().trim(),
   body('cast')
     .optional()
     .customSanitizer((val) => {
@@ -128,6 +131,7 @@ export const updateMovieValidator: ValidationChain[] = [
       if (typeof val === 'string') return val.split(',').map((s) => s.trim()).filter(Boolean);
       return [];
     }),
+  body('castMembers').optional().isArray(),
 ];
 
 export const movieIdValidator: ValidationChain[] = [

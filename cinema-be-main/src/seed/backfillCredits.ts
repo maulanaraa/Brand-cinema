@@ -32,12 +32,18 @@ const run = async () => {
           if (details.director) {
             movie.director = details.director;
           }
+          if (details.directorPhoto) {
+            movie.directorPhoto = details.directorPhoto;
+          }
           if (details.cast && details.cast.length > 0) {
             movie.cast = details.cast;
           }
+          if (details.castMembers && details.castMembers.length > 0) {
+            movie.castMembers = details.castMembers;
+          }
           await movie.save();
           updatedCount++;
-          logger.info(`Updated "${movie.title}": Director="${movie.director}", Cast=${JSON.stringify(movie.cast)}`);
+          logger.info(`Updated "${movie.title}": Director="${movie.director}" (photo: ${Boolean(movie.directorPhoto)}), CastMembers=${movie.castMembers?.length ?? 0}`);
         } else {
           logger.warn(`Could not find TMDB match for "${movie.title}"`);
         }

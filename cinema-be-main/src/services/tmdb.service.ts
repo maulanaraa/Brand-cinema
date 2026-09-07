@@ -54,12 +54,15 @@ interface TmdbMovieDetails {
   credits?: {
     cast: Array<{
       name: string;
+      character?: string;
+      profile_path?: string | null;
       order?: number;
     }>;
     crew: Array<{
       job: string;
       name: string;
       department?: string;
+      profile_path?: string | null;
     }>;
   };
 }
@@ -97,7 +100,9 @@ export interface TmdbMovieImportData {
   releaseDate: string;
   status: MovieStatus;
   director: string;
+  directorPhoto: string;
   cast: string[];
+  castMembers: Array<{ name: string; character: string; photo: string }>;
 }
 
 const buildPosterUrl = (path: string | null): string => {
@@ -110,18 +115,43 @@ const buildBackdropUrl = (path: string | null): string => {
   return `https://image.tmdb.org/t/p/w1280${path}`;
 };
 
+const buildProfileUrl = (path: string | null | undefined): string => {
+  if (!path) return '';
+  return `https://image.tmdb.org/t/p/w185${path}`;
+};
+
 const extractDirector = (movie: TmdbMovieDetails): string => {
   const crew = movie.credits?.crew ?? [];
   const director = crew.find((c) => c.job === 'Director');
   return director ? director.name : '';
 };
 
+const extractDirectorPhoto = (movie: TmdbMovieDetails): string => {
+  const crew = movie.credits?.crew ?? [];
+  const director = crew.find((c) => c.job === 'Director');
+  return buildProfileUrl(director?.profile_path);
+};
+
 const extractCast = (movie: TmdbMovieDetails): string[] => {
   const cast = movie.credits?.cast ?? [];
   return [...cast]
     .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
-    .slice(0, 6)
+    .slice(0, 10)
     .map((c) => c.name);
+};
+
+const extractCastMembers = (
+  movie: TmdbMovieDetails
+): Array<{ name: string; character: string; photo: string }> => {
+  const cast = movie.credits?.cast ?? [];
+  return [...cast]
+    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+    .slice(0, 10)
+    .map((c) => ({
+      name: c.name,
+      character: c.character || '',
+      photo: buildProfileUrl(c.profile_path),
+    }));
 };
 
 const extractTrailerUrl = (movie: TmdbMovieDetails): string => {
@@ -303,7 +333,9 @@ export class TmdbService {
       releaseDate,
       status: resolveStatusFromReleaseDate(releaseDate),
       director: extractDirector(movie),
+      directorPhoto: extractDirectorPhoto(movie),
       cast: extractCast(movie),
+      castMembers: extractCastMembers(movie),
     };
   }
 
@@ -435,7 +467,9 @@ export class TmdbService {
           movie.trailerUrl = details.trailerUrl || movie.trailerUrl;
           movie.genre = details.genre || movie.genre;
           movie.director = details.director || movie.director;
+          movie.directorPhoto = details.directorPhoto || movie.directorPhoto;
           movie.cast = details.cast && details.cast.length > 0 ? details.cast : movie.cast;
+          movie.castMembers = details.castMembers && details.castMembers.length > 0 ? details.castMembers : movie.castMembers;
           movie.status = MovieStatus.NOW_PLAYING;
           movie.isActive = true;
           await movie.save();
@@ -454,7 +488,9 @@ export class TmdbService {
             isActive: true,
             tmdbId: details.tmdbId,
             director: details.director || '',
+            directorPhoto: details.directorPhoto || '',
             cast: details.cast || [],
+            castMembers: details.castMembers || [],
           });
         }
 
@@ -463,7 +499,7 @@ export class TmdbService {
         const hallName = halls.length > 0 ? halls[0].name : 'Studio 1';
         const hallSeats = halls.length > 0 ? halls[0].totalSeats : 64;
 
-        const showTimes = ['13:00', '15:30', '18:00', '20:30'];
+        const showTimes = ['13:00', '16:30', '20:00'];
         const prices = [40000, 45000, 50000];
 
         for (let dayOffset = 0; dayOffset < 5; dayOffset++) {
@@ -525,7 +561,9 @@ export class TmdbService {
           movie.trailerUrl = details.trailerUrl || movie.trailerUrl;
           movie.genre = details.genre || movie.genre;
           movie.director = details.director || movie.director;
+          movie.directorPhoto = details.directorPhoto || movie.directorPhoto;
           movie.cast = details.cast && details.cast.length > 0 ? details.cast : movie.cast;
+          movie.castMembers = details.castMembers && details.castMembers.length > 0 ? details.castMembers : movie.castMembers;
           movie.status = MovieStatus.COMING_SOON;
           movie.isActive = true;
           await movie.save();
@@ -544,7 +582,9 @@ export class TmdbService {
             isActive: true,
             tmdbId: details.tmdbId,
             director: details.director || '',
+            directorPhoto: details.directorPhoto || '',
             cast: details.cast || [],
+            castMembers: details.castMembers || [],
           });
         }
 

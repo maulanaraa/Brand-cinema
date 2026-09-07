@@ -8,6 +8,12 @@ export interface AuthUser {
   avatarUrl?: string;
 }
 
+export interface CastMember {
+  name: string;
+  character?: string;
+  photo?: string;
+}
+
 export interface IMovie {
   _id: string;
   title: string;
@@ -20,7 +26,9 @@ export interface IMovie {
   backdrop_url?: string;
   classification?: string;
   director?: string;
+  directorPhoto?: string;
   cast?: string[];
+  castMembers?: CastMember[];
   rating?: number;
   ticket_price: number;
   status: 'now_showing' | 'coming_soon';

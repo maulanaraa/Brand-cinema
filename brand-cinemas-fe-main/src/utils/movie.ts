@@ -67,7 +67,9 @@ export function toMovie(api: ApiMovie): IMovie {
     language: api.language,
     isActive: api.isActive,
     director: api.director,
+    directorPhoto: api.directorPhoto,
     cast: api.cast,
+    castMembers: api.castMembers,
     status,
     is_now_showing: status === 'now_showing' && api.isActive,
     ticket_price: 55000,
@@ -102,7 +104,9 @@ export function buildMovieRequestBody(
   if (data.tmdbId !== undefined) body.tmdbId = data.tmdbId;
   if (data.posterUrl?.trim()) body.poster = data.posterUrl.trim();
   if (data.director !== undefined) body.director = data.director;
+  if (data.directorPhoto !== undefined) body.directorPhoto = data.directorPhoto;
   if (data.cast !== undefined) body.cast = data.cast;
+  if (data.castMembers !== undefined) body.castMembers = data.castMembers;
 
   return body;
 }
