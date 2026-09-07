@@ -258,26 +258,26 @@ export default function MovieDetailsPage() {
             {/* Director Section */}
             <div className="space-y-3">
               <p className="section-eyebrow">{t('director')}</p>
-              <div className="flex items-center gap-4 p-4 rounded-xl bg-[var(--surface-muted)] dark:bg-dark-900/60 max-w-md">
+              <div className="flex items-center gap-4 p-3.5 rounded-xl bg-[var(--surface-card)] dark:bg-dark-900/90 max-w-sm shadow-md">
                 {movie.directorPhoto ? (
                   <img
                     src={movie.directorPhoto}
                     alt={movie.director || 'Director'}
-                    className="w-16 h-16 rounded-full object-cover shadow-md"
+                    className="w-16 h-20 rounded-lg object-cover shadow-md flex-shrink-0"
                     onError={(e) => {
                       e.currentTarget.style.display = 'none';
                     }}
                   />
                 ) : (
-                  <div className="w-16 h-16 rounded-full bg-primary-500/20 text-primary-500 flex items-center justify-center font-bold text-xl">
+                  <div className="w-16 h-20 rounded-lg bg-primary-500/20 text-[#D5A527] flex items-center justify-center font-bold text-2xl flex-shrink-0">
                     {movie.director ? movie.director.charAt(0) : '🎬'}
                   </div>
                 )}
                 <div>
-                  <h3 className="text-lg font-bold text-gray-900 dark:text-white">
+                  <h3 className="text-base font-bold text-gray-900 dark:text-white leading-snug">
                     {movie.director || t('toBeAnnounced')}
                   </h3>
-                  <span className="text-xs uppercase tracking-wider text-[#D5A527] font-semibold">
+                  <span className="text-xs uppercase tracking-wider text-[#D5A527] font-semibold mt-0.5 block">
                     {t('director')}
                   </span>
                 </div>
@@ -299,32 +299,36 @@ export default function MovieDetailsPage() {
                   {movie.castMembers.map((member, idx) => (
                     <div
                       key={`${member.name}-${idx}`}
-                      className="group flex-shrink-0 w-32 sm:w-36 flex flex-col items-center text-center p-3 rounded-xl bg-[var(--surface-muted)] dark:bg-dark-900/60 transition duration-300 hover:bg-[var(--surface-raised)] dark:hover:bg-dark-800"
+                      className="group flex-shrink-0 w-36 sm:w-40 flex flex-col overflow-hidden rounded-xl bg-[var(--surface-card)] dark:bg-dark-900/90 shadow-md transition-all duration-300 hover:-translate-y-1 hover:shadow-xl dark:shadow-black/40"
                     >
-                      <div className="w-20 h-20 mb-3 rounded-full overflow-hidden bg-gray-200 dark:bg-dark-950 shadow-inner group-hover:scale-105 transition-transform duration-300">
+                      <div className="relative w-full aspect-[4/5] overflow-hidden bg-gray-200 dark:bg-dark-950">
                         {member.photo ? (
                           <img
                             src={member.photo}
                             alt={member.name}
-                            className="w-full h-full object-cover object-top"
+                            className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-500"
                             onError={(e) => {
                               e.currentTarget.style.display = 'none';
                             }}
                           />
                         ) : (
-                          <div className="w-full h-full flex items-center justify-center text-gray-400 dark:text-slate-500 text-lg font-semibold">
-                            {member.name.charAt(0)}
+                          <div className="w-full h-full flex flex-col items-center justify-center text-gray-400 dark:text-slate-500 bg-dark-900">
+                            <span className="text-2xl font-bold text-[#D5A527]">
+                              {member.name.charAt(0)}
+                            </span>
                           </div>
                         )}
                       </div>
-                      <h4 className="text-sm font-semibold text-gray-900 dark:text-white line-clamp-1 group-hover:text-primary-400 transition-colors w-full">
-                        {member.name}
-                      </h4>
-                      {member.character && (
-                        <p className="text-xs text-gray-500 dark:text-slate-400 line-clamp-1 mt-0.5 w-full">
-                          {member.character}
-                        </p>
-                      )}
+                      <div className="p-3.5 flex flex-col flex-grow text-left justify-start">
+                        <h4 className="text-sm font-bold text-gray-900 dark:text-white line-clamp-2 leading-snug group-hover:text-[#D5A527] transition-colors">
+                          {member.name}
+                        </h4>
+                        {member.character && (
+                          <p className="text-xs text-gray-500 dark:text-slate-400 line-clamp-1 mt-1 font-medium">
+                            {member.character}
+                          </p>
+                        )}
+                      </div>
                     </div>
                   ))}
                 </div>
