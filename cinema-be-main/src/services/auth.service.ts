@@ -167,7 +167,7 @@ export class AuthService {
         });
 
         if (!user) {
-          throw new AppError(MESSAGES.NOT_FOUND, HTTP_STATUS.NOT_FOUND);
+          user = existingByEmail;
         }
       } else {
         user = await userRepository.create({
@@ -180,8 +180,12 @@ export class AuthService {
         void emailService.sendWelcomeEmail({
           name: user.name,
           email: user.email,
-        });
+        }).catch(() => {});
       }
+    }
+
+    if (!user) {
+      throw new AppError('Unable to authenticate with Google', HTTP_STATUS.INTERNAL_SERVER_ERROR);
     }
 
     const token = this.generateToken(user);

@@ -9,16 +9,16 @@ import { revokeCurrentToken } from '../middlewares/auth.middleware';
 export const register = asyncHandler(
   async (req: AuthenticatedRequest, res: Response, _next: NextFunction): Promise<void> => {
     const result = await authService.register(req.body);
-    res.cookie(COOKIE_NAME, result.token, getCookieOptions());
-    sendSuccess(res, MESSAGES.REGISTER_SUCCESS, { user: result.user }, HTTP_STATUS.CREATED);
+    res.cookie(COOKIE_NAME, result.token, getCookieOptions(req.headers.origin));
+    sendSuccess(res, MESSAGES.REGISTER_SUCCESS, { user: result.user, token: result.token }, HTTP_STATUS.CREATED);
   }
 );
 
 export const login = asyncHandler(
   async (req: AuthenticatedRequest, res: Response, _next: NextFunction): Promise<void> => {
     const result = await authService.login(req.body);
-    res.cookie(COOKIE_NAME, result.token, getCookieOptions());
-    sendSuccess(res, MESSAGES.LOGIN_SUCCESS, { user: result.user });
+    res.cookie(COOKIE_NAME, result.token, getCookieOptions(req.headers.origin));
+    sendSuccess(res, MESSAGES.LOGIN_SUCCESS, { user: result.user, token: result.token });
   }
 );
 
@@ -28,7 +28,7 @@ export const logout = asyncHandler(
     if (token) {
       await revokeCurrentToken(token);
     }
-    res.clearCookie(COOKIE_NAME, getCookieOptions());
+    res.clearCookie(COOKIE_NAME, getCookieOptions(req.headers.origin));
     sendSuccess(res, MESSAGES.LOGOUT_SUCCESS, null);
   }
 );
@@ -58,7 +58,7 @@ export const googleAuth = asyncHandler(
   async (req: AuthenticatedRequest, res: Response, _next: NextFunction): Promise<void> => {
     const idToken = req.body.idToken || req.body.credential;
     const result = await authService.googleAuth({ idToken });
-    res.cookie(COOKIE_NAME, result.token, getCookieOptions());
-    sendSuccess(res, MESSAGES.GOOGLE_AUTH_SUCCESS, { user: result.user });
+    res.cookie(COOKIE_NAME, result.token, getCookieOptions(req.headers.origin));
+    sendSuccess(res, MESSAGES.GOOGLE_AUTH_SUCCESS, { user: result.user, token: result.token });
   }
 );

@@ -75,10 +75,11 @@ export const hashPasswordResetToken = (token: string): string => {
   return crypto.createHash('sha256').update(token).digest('hex');
 };
 
-export const getCookieOptions = () => {
+export const getCookieOptions = (origin?: string) => {
   const isProduction = process.env.NODE_ENV === 'production';
-  // Cross-subdomain SPA (www → api.brand-cinemas.online): Lax is enough for same-site
-  // subdomains and is less brittle than Strict for auth redirects.
+  const isVercel = origin ? /vercel\.app/i.test(origin) : false;
+  const isBrandCinemas = origin ? /brand-cinemas\.online/i.test(origin) : false;
+
   const options: {
     httpOnly: boolean;
     secure: boolean;
@@ -89,15 +90,15 @@ export const getCookieOptions = () => {
     path: string;
   } = {
     httpOnly: true,
-    secure: isProduction,
-    sameSite: 'lax',
+    secure: isProduction || isVercel,
+    sameSite: isVercel ? 'none' : 'lax',
     maxAge: 7 * 24 * 60 * 60 * 1000,
     signed: true,
     path: '/',
   };
 
-  // Share cookie across www + api subdomains in production
-  if (isProduction) {
+  // Only set domain when actually on brand-cinemas.online to avoid browser rejecting cookie
+  if (isBrandCinemas) {
     options.domain = '.brand-cinemas.online';
   }
 

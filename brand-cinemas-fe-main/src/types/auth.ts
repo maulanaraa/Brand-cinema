@@ -52,6 +52,7 @@ export interface GoogleAuthRequest {
 
 export interface AuthResponseData {
   user: User;
+  token?: string;
 }
 
 export type MeResponseData = UserProfile;

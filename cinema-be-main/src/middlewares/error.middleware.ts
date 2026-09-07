@@ -38,8 +38,19 @@ export const errorHandler: ErrorRequestHandler = (
     return;
   }
 
-  if (err instanceof AppError) {
-    sendError(res, err.message, err.errors, err.statusCode);
+  const isAppError =
+    err instanceof AppError ||
+    (err && typeof (err as any).statusCode === 'number' && (err as any).isOperational === true);
+
+  if (isAppError) {
+    const statusCode = (err as any).statusCode || HTTP_STATUS.BAD_REQUEST;
+    const errors = (err as any).errors || [];
+    sendError(res, err.message, errors, statusCode);
+    return;
+  }
+
+  if (err instanceof SyntaxError && 'status' in err && (err as any).status === 400) {
+    sendError(res, 'Invalid JSON payload', [], HTTP_STATUS.BAD_REQUEST);
     return;
   }
 
@@ -73,7 +84,7 @@ export const errorHandler: ErrorRequestHandler = (
 
   sendError(
     res,
-    process.env.NODE_ENV === 'production' ? MESSAGES.INTERNAL_ERROR : err.message,
+    err.message || MESSAGES.INTERNAL_ERROR,
     [],
     HTTP_STATUS.INTERNAL_SERVER_ERROR
   );

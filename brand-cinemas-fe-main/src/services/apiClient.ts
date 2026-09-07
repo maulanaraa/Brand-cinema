@@ -27,6 +27,12 @@ function assertJsonResponse(res: Response): void {
   }
 }
 
+function getAuthHeaders(): Record<string, string> {
+  if (typeof window === 'undefined') return {};
+  const token = localStorage.getItem('auth_token');
+  return token ? { Authorization: `Bearer ${token}` } : {};
+}
+
 export async function apiRequest<T>(
   path: string,
   options: RequestInit = {},
@@ -36,6 +42,7 @@ export async function apiRequest<T>(
     credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
+      ...getAuthHeaders(),
       ...options.headers,
     },
   });
@@ -70,6 +77,9 @@ export async function apiFormRequest<T>(
   const res = await fetch(`${API_URL}${path}`, {
     method,
     credentials: 'include',
+    headers: {
+      ...getAuthHeaders(),
+    },
     body: formData,
   });
 

@@ -28,6 +28,9 @@ export const authService = {
       method: 'POST',
       body: JSON.stringify({ email, password } satisfies LoginRequest),
     });
+    if (res.data.token) {
+      localStorage.setItem('auth_token', res.data.token);
+    }
     return toAuthUser(res.data.user);
   },
 
@@ -45,11 +48,18 @@ export const authService = {
       method: 'POST',
       body: JSON.stringify({ name: fullName, email, password } satisfies RegisterRequest),
     });
+    if (res.data.token) {
+      localStorage.setItem('auth_token', res.data.token);
+    }
     return toAuthUser(res.data.user);
   },
 
   async logout() {
-    await apiRequest<null>('/api/auth/logout', { method: 'POST' });
+    try {
+      await apiRequest<null>('/api/auth/logout', { method: 'POST' });
+    } finally {
+      localStorage.removeItem('auth_token');
+    }
   },
 
   async getCurrentUser(): Promise<AuthUser | null> {
@@ -83,6 +93,9 @@ export const authService = {
       method: 'POST',
       body: JSON.stringify({ credential } satisfies GoogleAuthRequest),
     });
+    if (res.data.token) {
+      localStorage.setItem('auth_token', res.data.token);
+    }
     return toAuthUser(res.data.user);
   },
 };
