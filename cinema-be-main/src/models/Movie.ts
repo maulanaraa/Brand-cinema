@@ -14,6 +14,8 @@ export interface IMovie extends Document {
   status: MovieStatus;
   isActive: boolean;
   tmdbId?: number;
+  director?: string;
+  cast?: string[];
   isDeleted: boolean;
   createdAt: Date;
   updatedAt: Date;
@@ -78,6 +80,15 @@ const movieSchema = new Schema<IMovie>(
       type: Number,
       index: true,
       sparse: true,
+    },
+    director: {
+      type: String,
+      default: '',
+      trim: true,
+    },
+    cast: {
+      type: [String],
+      default: [],
     },
     isDeleted: {
       type: Boolean,

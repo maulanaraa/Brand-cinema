@@ -29,6 +29,8 @@ export interface TmdbMovieImportData {
   rating?: number;
   language?: string;
   releaseDate?: string;
+  director?: string;
+  cast?: string[];
 }
 
 export interface TmdbGenre {

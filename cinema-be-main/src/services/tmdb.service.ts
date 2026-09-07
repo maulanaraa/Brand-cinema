@@ -51,6 +51,17 @@ interface TmdbMovieDetails {
       name: string;
     }>;
   };
+  credits?: {
+    cast: Array<{
+      name: string;
+      order?: number;
+    }>;
+    crew: Array<{
+      job: string;
+      name: string;
+      department?: string;
+    }>;
+  };
 }
 
 export interface TmdbSearchItem {
@@ -85,6 +96,8 @@ export interface TmdbMovieImportData {
   language: string;
   releaseDate: string;
   status: MovieStatus;
+  director: string;
+  cast: string[];
 }
 
 const buildPosterUrl = (path: string | null): string => {
@@ -95,6 +108,20 @@ const buildPosterUrl = (path: string | null): string => {
 const buildBackdropUrl = (path: string | null): string => {
   if (!path) return '';
   return `https://image.tmdb.org/t/p/w1280${path}`;
+};
+
+const extractDirector = (movie: TmdbMovieDetails): string => {
+  const crew = movie.credits?.crew ?? [];
+  const director = crew.find((c) => c.job === 'Director');
+  return director ? director.name : '';
+};
+
+const extractCast = (movie: TmdbMovieDetails): string[] => {
+  const cast = movie.credits?.cast ?? [];
+  return [...cast]
+    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+    .slice(0, 6)
+    .map((c) => c.name);
 };
 
 const extractTrailerUrl = (movie: TmdbMovieDetails): string => {
@@ -256,7 +283,7 @@ export class TmdbService {
 
   async getMovieImportData(tmdbId: number): Promise<TmdbMovieImportData> {
     const movie = await this.request<TmdbMovieDetails>(`/movie/${tmdbId}`, {
-      append_to_response: 'videos',
+      append_to_response: 'videos,credits',
       language: 'en-US',
     });
 
@@ -275,6 +302,8 @@ export class TmdbService {
       language: mapLanguage(movie.original_language),
       releaseDate,
       status: resolveStatusFromReleaseDate(releaseDate),
+      director: extractDirector(movie),
+      cast: extractCast(movie),
     };
   }
 
@@ -405,6 +434,8 @@ export class TmdbService {
           movie.poster = details.poster || movie.poster;
           movie.trailerUrl = details.trailerUrl || movie.trailerUrl;
           movie.genre = details.genre || movie.genre;
+          movie.director = details.director || movie.director;
+          movie.cast = details.cast && details.cast.length > 0 ? details.cast : movie.cast;
           movie.status = MovieStatus.NOW_PLAYING;
           movie.isActive = true;
           await movie.save();
@@ -422,6 +453,8 @@ export class TmdbService {
             status: MovieStatus.NOW_PLAYING,
             isActive: true,
             tmdbId: details.tmdbId,
+            director: details.director || '',
+            cast: details.cast || [],
           });
         }
 
@@ -491,6 +524,8 @@ export class TmdbService {
           movie.poster = details.poster || movie.poster;
           movie.trailerUrl = details.trailerUrl || movie.trailerUrl;
           movie.genre = details.genre || movie.genre;
+          movie.director = details.director || movie.director;
+          movie.cast = details.cast && details.cast.length > 0 ? details.cast : movie.cast;
           movie.status = MovieStatus.COMING_SOON;
           movie.isActive = true;
           await movie.save();
@@ -508,6 +543,8 @@ export class TmdbService {
             status: MovieStatus.COMING_SOON,
             isActive: true,
             tmdbId: details.tmdbId,
+            director: details.director || '',
+            cast: details.cast || [],
           });
         }
 

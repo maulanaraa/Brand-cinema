@@ -13,6 +13,8 @@ export interface ApiMovie {
   isActive: boolean;
   status?: 'now_showing' | 'coming_soon' | 'now_playing' | 'NOW_PLAYING' | 'COMING_SOON';
   tmdbId?: number;
+  director?: string;
+  cast?: string[];
   createdAt: string;
   updatedAt: string;
 }
@@ -52,6 +54,8 @@ export interface CreateMovieInput {
   status?: 'now_showing' | 'coming_soon';
   posterUrl?: string;
   tmdbId?: number;
+  director?: string;
+  cast?: string[];
 }
 
 export type UpdateMovieInput = Partial<CreateMovieInput>;

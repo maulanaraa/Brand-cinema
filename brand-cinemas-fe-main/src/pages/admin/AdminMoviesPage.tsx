@@ -26,6 +26,8 @@ interface MovieFormFields {
   trailer_url?: string;
   status: 'now_showing' | 'coming_soon';
   isActive: boolean;
+  director?: string;
+  cast?: string;
 }
 
 interface MovieFormProps {
@@ -71,6 +73,8 @@ const MovieForm: React.FC<MovieFormProps> = ({ movieToEdit, onClose, onSave }) =
         trailer_url: movieToEdit.trailer_url || '',
         status: movieToEdit.status === 'coming_soon' ? 'coming_soon' : 'now_showing',
         isActive: movieToEdit.isActive ?? true,
+        director: movieToEdit.director || '',
+        cast: Array.isArray(movieToEdit.cast) ? movieToEdit.cast.join(', ') : '',
       });
       setTmdbId(null);
     } else {
@@ -86,6 +90,8 @@ const MovieForm: React.FC<MovieFormProps> = ({ movieToEdit, onClose, onSave }) =
         trailer_url: '',
         status: 'now_showing',
         isActive: true,
+        director: '',
+        cast: '',
       });
       setTmdbId(null);
     }
@@ -115,6 +121,8 @@ const MovieForm: React.FC<MovieFormProps> = ({ movieToEdit, onClose, onSave }) =
       trailer_url: data.trailerUrl || '',
       status: importedStatus,
       isActive: true,
+      director: data.director || '',
+      cast: Array.isArray(data.cast) ? data.cast.join(', ') : (data.cast || ''),
     });
 
     setTmdbId(data.tmdbId ?? null);
@@ -142,6 +150,10 @@ const MovieForm: React.FC<MovieFormProps> = ({ movieToEdit, onClose, onSave }) =
         isActive: formData.isActive,
         posterUrl: posterUrlValue || undefined,
         tmdbId: tmdbId ?? undefined,
+        director: formData.director?.trim() || undefined,
+        cast: formData.cast
+          ? formData.cast.split(',').map((c) => c.trim()).filter(Boolean)
+          : undefined,
       };
 
       if (movieToEdit) {
@@ -218,6 +230,25 @@ const MovieForm: React.FC<MovieFormProps> = ({ movieToEdit, onClose, onSave }) =
               <label className="block text-sm font-medium mb-1">Language</label>
               <input {...register('language', { required: 'Language is required' })} className="input" />
               {errors.language && <p className="text-red-400 text-sm mt-1">{errors.language.message}</p>}
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-sm font-medium mb-1">Director (Sutradara)</label>
+              <input
+                {...register('director')}
+                placeholder="e.g. James Wan"
+                className="input"
+              />
+            </div>
+            <div>
+              <label className="block text-sm font-medium mb-1">Cast (Pemeran, pisahkan koma)</label>
+              <input
+                {...register('cast')}
+                placeholder="e.g. Patrick Wilson, Rose Byrne, Ty Simpkins"
+                className="input"
+              />
             </div>
           </div>
 
