@@ -93,7 +93,7 @@ export const getCookieOptions = (origin?: string) => {
     secure: isProduction || isVercel,
     sameSite: isVercel ? 'none' : 'lax',
     maxAge: 7 * 24 * 60 * 60 * 1000,
-    signed: true,
+    signed: false,
     path: '/',
   };
 
@@ -111,9 +111,10 @@ export const extractAuthToken = (req: {
   headers: { authorization?: string };
 }): string | undefined => {
   const signedToken = req.signedCookies?.[COOKIE_NAME];
+  const cookieToken = req.cookies?.[COOKIE_NAME];
   const headerToken = req.headers.authorization?.startsWith('Bearer ')
     ? req.headers.authorization.split(' ')[1]
     : undefined;
 
-  return signedToken || headerToken;
+  return signedToken || cookieToken || headerToken;
 };

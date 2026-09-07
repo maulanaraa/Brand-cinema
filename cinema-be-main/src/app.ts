@@ -32,6 +32,12 @@ export const createApp = (): Application => {
   app.use(express.urlencoded({ extended: true }));
   app.use(mongoSanitize());
   app.use(cookieParser(env.cookieSecret));
+  app.use((req, _res, next) => {
+    if (env.cookieSecret && !(req as any).secret) {
+      (req as any).secret = env.cookieSecret;
+    }
+    next();
+  });
   app.use(morgan(env.nodeEnv === 'development' ? 'dev' : 'combined'));
 
   app.use(
