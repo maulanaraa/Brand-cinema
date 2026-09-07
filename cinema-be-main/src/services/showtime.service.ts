@@ -134,7 +134,7 @@ export class ShowtimeService {
       }
     }
 
-    const days = Math.min(60, Math.max(1, parseInt(query.days || '7', 10) || 7));
+    const days = Math.min(60, Math.max(1, parseInt(query.days || '3', 10) || 3));
     const today = dayjs().startOf('day');
     const startDate = today.toDate();
     const endDate = today.add(days - 1, 'day').endOf('day').toDate();

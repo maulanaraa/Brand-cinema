@@ -175,7 +175,11 @@ export default function BookingPage() {
     }
   };
 
-  const availableDates = [...new Set(showtimes.map((s) => s.show_date.split('T')[0]))];
+  const now = new Date();
+  const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+  const allDates = [...new Set(showtimes.map((s) => s.show_date.split('T')[0]))].sort();
+  const futureOrTodayDates = allDates.filter((d) => d >= todayStr);
+  const availableDates = (futureOrTodayDates.length > 0 ? futureOrTodayDates : allDates).slice(0, 3);
   const filteredShowtimes = showtimes.filter((s) => s.show_date.startsWith(selectedDate));
 
   if (loading || !movie) {

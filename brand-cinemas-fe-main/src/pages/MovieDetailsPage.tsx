@@ -58,7 +58,11 @@ export default function MovieDetailsPage() {
       const bookable = filterBookableShowtimes(showtimeData);
       setShowtimes(bookable);
       if (bookable.length > 0) {
-        setSelectedDate(bookable[0].show_date.split('T')[0]);
+        const now = new Date();
+        const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+        const sorted = [...new Set(bookable.map((s) => s.show_date.split('T')[0]))].sort();
+        const validDates = sorted.filter((d) => d >= todayStr);
+        setSelectedDate(validDates[0] || sorted[0]);
       }
     } catch (error) {
       console.error('Error fetching movie:', error);
@@ -67,7 +71,11 @@ export default function MovieDetailsPage() {
     }
   };
 
-  const availableDates = [...new Set(showtimes.map((showtime) => showtime.show_date.split('T')[0]))];
+  const now = new Date();
+  const todayStr = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+  const allDates = [...new Set(showtimes.map((showtime) => showtime.show_date.split('T')[0]))].sort();
+  const futureOrTodayDates = allDates.filter((date) => date >= todayStr);
+  const availableDates = (futureOrTodayDates.length > 0 ? futureOrTodayDates : allDates).slice(0, 3);
   const visibleShowtimes = showtimes.filter((showtime) => showtime.show_date.startsWith(selectedDate));
 
   const handleSelectShowtime = (showtime: IShowtime) => {
@@ -276,15 +284,22 @@ export default function MovieDetailsPage() {
               </div>
             </div>
 
-            {/* Cast Section (Below Director) */}
+            {/* Cast Section (Below Director - Horizontally Scrollable) */}
             <div className="space-y-4">
-              <p className="section-eyebrow">{t('cast')}</p>
+              <div className="flex items-center justify-between">
+                <p className="section-eyebrow">{t('cast')}</p>
+                {movie.castMembers && movie.castMembers.length > 3 && (
+                  <span className="text-xs text-gray-400 dark:text-slate-500 font-medium">
+                    Scroll →
+                  </span>
+                )}
+              </div>
               {movie.castMembers && movie.castMembers.length > 0 ? (
-                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+                <div className="flex gap-4 overflow-x-auto pb-4 pt-1 scroll-smooth [-ms-overflow-style:none] [scrollbar-width:thin]">
                   {movie.castMembers.map((member, idx) => (
                     <div
                       key={`${member.name}-${idx}`}
-                      className="group flex flex-col items-center text-center p-3 rounded-xl bg-[var(--surface-muted)] dark:bg-dark-900/60 transition duration-300 hover:bg-[var(--surface-raised)] dark:hover:bg-dark-800"
+                      className="group flex-shrink-0 w-32 sm:w-36 flex flex-col items-center text-center p-3 rounded-xl bg-[var(--surface-muted)] dark:bg-dark-900/60 transition duration-300 hover:bg-[var(--surface-raised)] dark:hover:bg-dark-800"
                     >
                       <div className="w-20 h-20 mb-3 rounded-full overflow-hidden bg-gray-200 dark:bg-dark-950 shadow-inner group-hover:scale-105 transition-transform duration-300">
                         {member.photo ? (
@@ -302,11 +317,11 @@ export default function MovieDetailsPage() {
                           </div>
                         )}
                       </div>
-                      <h4 className="text-sm font-semibold text-gray-900 dark:text-white line-clamp-1 group-hover:text-primary-400 transition-colors">
+                      <h4 className="text-sm font-semibold text-gray-900 dark:text-white line-clamp-1 group-hover:text-primary-400 transition-colors w-full">
                         {member.name}
                       </h4>
                       {member.character && (
-                        <p className="text-xs text-gray-500 dark:text-slate-400 line-clamp-1 mt-0.5">
+                        <p className="text-xs text-gray-500 dark:text-slate-400 line-clamp-1 mt-0.5 w-full">
                           {member.character}
                         </p>
                       )}

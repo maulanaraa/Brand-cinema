@@ -37,9 +37,9 @@ async function reseedShowtimes3x(): Promise<void> {
       isDeleted: false,
     });
 
-    logger.info(`Generating 3x daily showtimes for ${nowPlayingMovies.length} movies...`);
+    logger.info(`Generating 3x daily showtimes for ${nowPlayingMovies.length} movies across 3 days (including today)...`);
 
-    const DAYS_AHEAD = 5;
+    const DAYS_AHEAD = 2; // 0 = today, 1 = tomorrow, 2 = day after tomorrow -> 3 days total
     let createdCount = 0;
 
     for (let dayOffset = 0; dayOffset <= DAYS_AHEAD; dayOffset++) {

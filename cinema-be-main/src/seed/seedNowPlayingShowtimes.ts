@@ -50,8 +50,8 @@ async function seedNowPlayingShowtimes(): Promise<void> {
 
     logger.info(`Found ${nowPlayingMovies.length} now playing movies.`);
 
-    // 3. Build bulk operations for today + next 7 days
-    const DAYS_AHEAD = 7;
+    // 3. Build bulk operations for today + next 2 days (3 days total)
+    const DAYS_AHEAD = 2;
     const bulkOps: any[] = [];
 
     for (let dayOffset = 0; dayOffset <= DAYS_AHEAD; dayOffset++) {
