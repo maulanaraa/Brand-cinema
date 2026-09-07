@@ -6,7 +6,6 @@ import { useAuth } from '@/contexts/AuthContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import toast from 'react-hot-toast';
 import { clsx } from 'clsx';
-import ThemeToggle from './ThemeToggle';
 import LanguageSwitcher from './LanguageSwitcher';
 import CitySwitcher from './CitySwitcher';
 
@@ -66,7 +65,6 @@ export default function Header() {
           <div className="flex items-center space-x-2 sm:space-x-3">
             <CitySwitcher compact />
             <LanguageSwitcher />
-            <ThemeToggle />
             {user ? (
               <div className="hidden">
                 {isAdmin && (

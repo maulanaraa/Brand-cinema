@@ -21,7 +21,6 @@ import {
 import { useEffect, useState } from 'react'
 import { useAuth } from '@/contexts/AuthContext'
 import { useLanguage } from '@/contexts/LanguageContext'
-import ThemeToggle from '@/components/ThemeToggle'
 import LanguageSwitcher from '@/components/LanguageSwitcher'
 import type { TranslationKey } from '@/i18n/translations'
 import toast from 'react-hot-toast'
@@ -397,7 +396,6 @@ export default function AdminLayout() {
           {/* Right Controls */}
           <div className="flex items-center gap-3 sm:gap-4">
             <LanguageSwitcher />
-            <ThemeToggle />
           </div>
         </header>
 
